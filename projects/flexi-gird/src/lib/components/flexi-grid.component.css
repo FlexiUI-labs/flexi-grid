@@ -123,8 +123,8 @@ flexi-button {
 
 .flexi-grid-table-container th {
   background-color: var(--flexi-grid-bg-color);
-  padding-top: 20px;
-  padding-bottom: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   font-weight: bold;
 }
 
