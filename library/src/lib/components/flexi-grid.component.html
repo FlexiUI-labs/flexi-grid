@@ -1,7 +1,7 @@
 @if(getColumns().length > 0){
 <div [attr.data-bs-theme]="themeClass()" class="flexi-grid-table-container overflow-x"
   [ngClass]="(loading()) ? 'flexi-grid-disabled-div' : ''"
-  [ngStyle]="{ width: autoWidth() ? '100%' : width(), 'font-size': fontSize() }">
+  [ngStyle]="{ width: autoWidth() ? '100%' : width(), 'font-size': fontSize(), 'font-family': fontFamily() }">
   @if(showCaption()){
   <div class="flexi-grid-caption-div">
     <span class="flexi-grid-caption-title">{{ captionTitle() }}</span>
@@ -10,11 +10,11 @@
         <ng-container *ngTemplateOutlet="captionCommandTemplate()!" />
       }
       @if(showExportExcelBtn()){
-      <flexi-button btnIcon="file_save" flexiTooltip btnSize="small" [title]="exportExcelText()" btnColor="warning"
+      <flexi-button btnIcon="file_save" flexiTooltip btnSize="medium" [title]="exportExcelText()" btnColor="warning"
         (click)="onExportExcelButtonClick()" />
       }@if(showColumnVisibility()){
       <div style="position: relative">
-        <flexi-button btnIcon="menu" btnColor="info" btnSize="small" flexiTooltip [title]="columnVisibility()"
+        <flexi-button btnIcon="menu" btnColor="info" btnSize="medium" flexiTooltip [title]="columnVisibility()"
           (click)="toggleColumnVisibilityDropdown()" />
         <div class="flexi-grid-dropdown-menu" style="top: 40px" id="flexi-grid-column-vsibility-dropdown-{{timeStamp()}}">
           <div style="padding: 10px; padding-bottom: 2px; background-color: var(--flexi-grid-bg-color-part)">
@@ -33,7 +33,7 @@
         </div>
       </div>
       }@if(showRefreshBtn() || dataBinding()){
-      <flexi-button btnIcon="refresh" btnColor="dark" btnSize="small" flexiTooltip [title]="refreshText()"
+      <flexi-button btnIcon="refresh" btnColor="dark" btnSize="medium" flexiTooltip [title]="refreshText()"
         (click)="refreshDataMethod()" />
       }
     </div>
@@ -157,7 +157,7 @@
                           @if(column.showSecondDate() || (column.filterType() === "date" && column.filterValueSignal())){
                             <input [type]="setDropdownInputType(column)" [ngClass]="setDropdownInputClass(column)" [(ngModel)]="column.filterValue2Signal" name="filexi-filter-input-{{column.timeStamp()}}" (input)="filterDateRange(column)">
                           }
-                          <flexi-button btnWidth="100%" [btnText]="clearBtnText()" btnColor="info" (click)="clearFilter(column.field())" [btnDisabled]="!column.filterValueSignal()"/>
+                          <flexi-button btnWidth="100%" [btnText]="clearBtnText()" btnColor="dark" (click)="clearFilter(column.field())" [btnDisabled]="!column.filterValueSignal()"/>
                         </div>
                       </div>
                     </div>
@@ -177,15 +177,15 @@
                 </th>
               }
             </tr>
-            @if(filterable()){
+            @if(filterable() && showFilterPanel()){
             <tr class="flexi-grid-mobile-filter-tr" role="row">
               <th colSpan="2" scope="col" role="columnheader">
                 @if(isShowMobileFilter()){
-                <flexi-button btnColor="success" btnIcon="sweep" btnSize="small" (click)="closeMobileFilter()"
-                  btnText="Uygula" />
+                <flexi-button btnColor="success" btnIcon="sweep" btnSize="medium" (click)="closeMobileFilter()"
+                  [btnText]="applyBtnText()" />
                 }@else {
-                <flexi-button btnColor="primary" btnIcon="filter_list" btnSize="small" (click)="openMobileFilter()"
-                  btnText="Filtreyi Aç" />
+                <flexi-button btnColor="primary" btnIcon="filter_list" btnSize="medium" (click)="openMobileFilter()"
+                  [btnText]="openFilterBtnText()" />
                 }
               </th>
             </tr>
@@ -434,7 +434,7 @@
                     [attr.data-label]="commandColumnTitleSignal()" scope="cell">
                     @if(useCommandDropdown()){
                       <div class="flexi-grid-command-dropdown">
-                        <flexi-button btnColor="primary" btnSize="x-small" btnIcon="more_vert" />
+                        <flexi-button btnColor="primary" btnSize="small" btnIcon="more_vert" />
                         <div class="flexi-grid-command-dropdown-content">
                           <div class="flexi-grid-command-display-flex">
                               <ng-container *ngTemplateOutlet="

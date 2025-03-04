@@ -58,9 +58,9 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   readonly resizable = input<boolean>(true);
   readonly tbodyStyle = input<any>({});
   readonly trMinHeight = input<string>("45px");
-  readonly language = input<"tr" | "en">("tr");
+  readonly language = input<"tr" | "en">("en");
   readonly commandColumnTitle = input<string>("");
-  readonly commandColumnWidth = input<string>("100px");
+  readonly commandColumnWidth = input<string>("130px");
   readonly commandColumnTextAlign = input<AlignSetting>("left");
   readonly stickyCommandColumn = input<boolean>(true);
   readonly fontSize = input<string>("13px");
@@ -75,10 +75,14 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   readonly selectableTextAlign = input<TextAlignType>("center");
   readonly selectableField = input<string>("");
   readonly useCommandDropdown = input<boolean>(false);
+  readonly fontFamily = input<string>('IBM Plex Sans", sans-serif');
+  readonly showFilterPanel  = input<boolean>(true);
 
   readonly columnsArray = signal<FlexiGridColumnComponent[]>([]);
   readonly selectedRows = signal<Set<any>>(new Set());
-  readonly timeStamp = signal<number>(new Date().getTime());
+  readonly timeStamp = signal<string>(
+    `${new Date().getTime()}-${Math.random().toString(36).slice(2, 11)}`
+  );
   readonly allSelected = signal<boolean>(false);
   readonly totalSignal = linkedSignal(()=> {
     if(this.total()! > 0){
@@ -131,6 +135,8 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   readonly columnVisibility = computed(() => this.language() === "tr" ? "Sütun Görünürlüğü" : "Column Visibility");
   readonly exportExcelText = computed(() => this.language() === "tr" ? "Excel'e Aktar" : "Export Excel");
   readonly selectAnOption = computed(() => this.language() === "tr" ? "Seçim yapınız" : "Select an option");
+  readonly applyBtnText = computed(() => this.language() === "tr" ? "Uygulama" : "Apply");
+  readonly openFilterBtnText = computed(() => this.language() === "tr" ? "Filtreyi Aç" : "Open Filter");
   readonly clearBtnText = computed(() => this.language() === "tr" ? "Temizle" : "Clear");
   readonly selected = computed(() => this.language() === "tr" ? "Seçilen" : "Selected");
   readonly refreshText = computed(() => this.language() === "tr" ? "Yenile" : "Refresh");

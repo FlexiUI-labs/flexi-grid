@@ -90,23 +90,23 @@
         }
       }
     },
-    "flexi-gird": {
+    "library": {
       "projectType": "library",
-      "root": "projects/flexi-gird",
-      "sourceRoot": "projects/flexi-gird/src",
+      "root": "library",
+      "sourceRoot": "library/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/flexi-gird/ng-package.json"
+            "project": "library/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/flexi-gird/tsconfig.lib.prod.json"
+              "tsConfig": "library/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/flexi-gird/tsconfig.lib.json"
+              "tsConfig": "library/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -114,7 +114,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/flexi-gird/tsconfig.spec.json",
+            "tsConfig": "library/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

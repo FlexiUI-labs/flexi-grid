@@ -180,18 +180,12 @@ Use `flexiGridColumnCommandTemplate` to define a custom command column template:
 ```html
 <flexi-grid-column field="actions" title="Actions">
   <ng-template flexiGridColumnCommandTemplate let-item>
-    <flexi-button btnColor="primary" btnIcon="zoom_in" btnSize="x-small" title="Detail" flexiTooltip/>
-    <flexi-button btnColor="warning" btnIcon="edit" btnSize="x-small" flexiTooltip title="Edit" />
-    <flexi-button btnColor="danger"  btnSize="x-small" (click)="deleteByItem(item)" btnIcon="delete" flexiTooltip title="Delete" />
+    <flexi-button btnColor="primary" btnIcon="zoom_in" btnSize="small" title="Detail" flexiTooltip/>
+    <flexi-button btnColor="warning" btnIcon="edit" btnSize="small" flexiTooltip title="Edit" />
+    <flexi-button btnColor="danger"  btnSize="small" (click)="deleteByItem(item)" btnIcon="delete" flexiTooltip title="Delete" />
   </ng-template>
 </flexi-grid-column>
 ```
-
-## Documentation
-
-For a complete guide on usage, customization, and API reference, please visit the official documentation:
-
-📖 **[Flexi Grid Documentation](https://flexi-ui.ecnorow.com/flexi-grid)**
 
 ## Contributing
 

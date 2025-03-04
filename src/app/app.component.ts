@@ -1,5 +1,5 @@
 import { Component, computed, inject, resource, signal } from '@angular/core';
-import { FlexiGridModule } from '../../projects/flexi-gird/src/lib/modules/flexi-grid.module';
+import { FlexiGridModule } from '../../library/src/lib/modules/flexi-grid.module';
 import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 

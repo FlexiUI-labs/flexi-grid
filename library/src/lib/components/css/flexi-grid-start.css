@@ -1,4 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined");
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+.flexi-grid-table-container{
+  font-family: "IBM Plex Sans", sans-serif;
+}
 
 .material-symbols-outlined {
   font-family: "Material Symbols Outlined";
