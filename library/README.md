@@ -178,13 +178,13 @@ Use `flexiGridFooterTemplate` for footer customization:
 Use `flexiGridColumnCommandTemplate` to define a custom command column template:
 
 ```html
-<flexi-grid-column field="actions" title="Actions">
+<flexi-grid>
   <ng-template flexiGridColumnCommandTemplate let-item>
     <flexi-button btnColor="primary" btnIcon="zoom_in" btnSize="small" title="Detail" flexiTooltip/>
     <flexi-button btnColor="warning" btnIcon="edit" btnSize="small" flexiTooltip title="Edit" />
     <flexi-button btnColor="danger"  btnSize="small" (click)="deleteByItem(item)" btnIcon="delete" flexiTooltip title="Delete" />
   </ng-template>
-</flexi-grid-column>
+</flexi-grid>
 ```
 
 ## Contributing
