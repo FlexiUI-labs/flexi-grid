@@ -1,0 +1,15 @@
+.body-content{
+    max-width: 84.55vw; 
+    margin-left: 280px;
+}
+
+@media screen and (max-width:1350px) {
+    .no-mobile{
+        display: none !important;
+    }
+
+    .body-content{
+        max-width: 98.5vw;
+        margin-left: 0px;
+    }
+}

@@ -706,7 +706,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   }
 
   toggleColumnVisibilityDropdown() {
-    const el = document.getElementById(`flexi-grid-column-vsibility-dropdown-${this.timeStamp()}`);
+    const el = document.getElementById(`flexi-grid-column-visibility-dropdown-${this.timeStamp()}`);
     if(!el) return;
 
     if(el.classList.contains("show")){
@@ -966,12 +966,12 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     this.selectedRows().clear();
     if(this.dataBinding()){
       this.pagedData().forEach((item) => {
-        this.selectedRows().add(item[this.selectableField()]);
+        this.selectedRows().add(item);
       });
 
     }else{
       this.data().forEach((item) => {
-        this.selectedRows().add(item[this.selectableField()]);
+        this.selectedRows().add(item);
       });
     }
 

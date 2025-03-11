@@ -6,7 +6,7 @@ This library is designed to be flexible and easy to integrate into any Angular a
 
 ## Live Demo
 
-[![Edit in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://stackblitz.com/edit/stackblitz-starters-k8agwdjl?file=src%2Fapp.component.html)
+[![Edit in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://bolt.new/~/stackblitz-starters-k8agwdjl)
 
 ## Features
 

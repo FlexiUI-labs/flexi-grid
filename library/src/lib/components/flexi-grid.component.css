@@ -428,6 +428,11 @@ flexi-button {
   .flexi-grid-pagination-div {
     flex-direction: column;
   }
+
+  .flexi-grid-pagination-part-one{
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .flexi-grid-no-data-div {
@@ -443,7 +448,7 @@ flexi-button {
   font-size: 25px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 700px) {
   .flexi-grid-caption-button-div {
     align-items: center;
     justify-content: center;

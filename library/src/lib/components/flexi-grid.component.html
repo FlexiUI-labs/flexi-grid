@@ -16,7 +16,7 @@
       <div style="position: relative">
         <flexi-button btnIcon="menu" btnColor="info" btnSize="medium" flexiTooltip [title]="columnVisibility()"
           (click)="toggleColumnVisibilityDropdown()" />
-        <div class="flexi-grid-dropdown-menu" style="top: 40px" id="flexi-grid-column-vsibility-dropdown-{{timeStamp()}}">
+        <div class="flexi-grid-dropdown-menu" style="top: 40px" id="flexi-grid-column-visibility-dropdown-{{timeStamp()}}">
           <div style="padding: 10px; padding-bottom: 2px; background-color: var(--flexi-grid-bg-color-part)">
             <div class="flexi-grid-dropdown-title">{{ columnVisibility() }}</div>
             <div class="flexi-grid-bottom-line"></div>
@@ -331,7 +331,7 @@
             @if(data().length > 0 || prevData().length > 0){
               @for(item of (pagedData().length > 0 ? pagedData() : prevData()); track trackByFn(); let i = $index){
                 <tr cdkDrag [cdkDragDisabled]="!reorderable()"
-                  [ngClass]="{'flexi-grid-selected-row': selectedRows().has(item[selectableField()])}"
+                  [ngClass]="{'flexi-grid-selected-row': selectedRows().has(item)}"
                   [ngStyle]="{ 'min-height': trMinHeight() }" role="row">
                   @if(selectable()){
                     <td [ngStyle]="{
@@ -339,9 +339,9 @@
                           textAlign: selectableTextAlign(),
                           userSelect: 'none',
                           cursor: 'pointer'
-                        }" [attr.data-label]="'#'" scope="cell" (click)="toggleRowSelection(item[selectableField()])">
+                        }" [attr.data-label]="'#'" scope="cell" (click)="toggleRowSelection(item)">
                       <input class="checkbox-custom" type="checkbox" style="transform: scale(1.3);"
-                        [checked]="checked(item[selectableField()])">
+                        [checked]="checked(item)" id="flexi-grid-column-selectable-checkbox-{{timeStamp()}}">
                     </td>
                   }
 
@@ -522,7 +522,7 @@
         <option>{{ size }}</option>
         }
       </select>
-      <span [ngStyle]="{visibility: selectedRows().size > 0 ? 'visible' : 'hidden'}">
+      <span [ngStyle]="{visibility: selectedRows().size > 0 ? 'visible' : 'hidden', height: selectedRows().size > 0 ? '100%' : '0px'}">
         <span style="margin-left: 10px;">{{selected()}}: </span><b>{{selectedRows().size}}</b>
       </span>
     </div>
