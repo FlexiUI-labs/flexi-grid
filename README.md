@@ -4,6 +4,10 @@ Flexi Grid is an advanced, lightweight, and customizable Angular 19 data grid co
 
 This library is designed to be flexible and easy to integrate into any Angular application, offering a seamless user experience with responsive and interactive data tables.
 
+## Live Demo
+
+[![Edit in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://stackblitz.com/edit/stackblitz-starters-k8agwdjl?file=src%2Fapp.component.html)
+
 ## Features
 
 Flexi Grid comes with a variety of powerful features, making it a versatile choice for displaying and managing tabular data in Angular applications.
