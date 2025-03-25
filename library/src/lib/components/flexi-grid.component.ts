@@ -1055,4 +1055,27 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
       default: return "search"
     }
   }
+
+  autoFitColumnWidth(column: FlexiGridColumnComponent) {
+    const columnField = column.field();
+    if (!columnField) return;
+
+    const cells = Array.from(document.querySelectorAll(`td[data-label="${column.title() || column.field()}"]`));
+    if (cells.length === 0) return;
+
+    let maxContentWidth = 0;
+    cells.forEach(cell => {
+        const content = cell.textContent || '';
+        const tempSpan = document.createElement('span');
+        tempSpan.style.visibility = 'hidden';
+        tempSpan.style.position = 'absolute';
+        tempSpan.style.whiteSpace = 'nowrap';
+        tempSpan.textContent = content;
+        document.body.appendChild(tempSpan);
+        maxContentWidth = Math.max(maxContentWidth, tempSpan.offsetWidth);
+        document.body.removeChild(tempSpan);
+    });
+
+    column.widthSignal.set(`${maxContentWidth + 5}px`);
+}
 }
