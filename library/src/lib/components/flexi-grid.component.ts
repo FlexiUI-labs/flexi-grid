@@ -44,10 +44,10 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   readonly dataBinding = input<boolean>(false);
   readonly showCaption = input<boolean>(false);
   readonly showExportExcelBtn = input<boolean>(false);
-  readonly autoHeight = input<boolean>(false);
-  readonly height = input<string>("500px");
+  readonly height = input<string>("450px");
   readonly useMinHeight = input<boolean>(true);
   readonly minHeight = input<string>("450px");
+  readonly autoHeight = input<boolean>(true);
   readonly minWidth = input<string>("1050px");
   readonly useMinWidth = input<boolean>(false);
   readonly autoWidth = input<boolean>(true);
@@ -77,6 +77,8 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   readonly useCommandDropdown = input<boolean>(false);
   readonly fontFamily = input<string>('IBM Plex Sans", sans-serif');
   readonly showFilterPanel  = input<boolean>(true);
+  readonly groupable = input<boolean>(false);
+  readonly groupableField = input<string>('');
 
   readonly columnsArray = signal<FlexiGridColumnComponent[]>([]);
   readonly selectedRows = signal<Set<any>>(new Set());
@@ -95,6 +97,21 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   });
   readonly dataSignal = linkedSignal(()=> this.data());
   readonly commandColumnTitleSignal = linkedSignal(() => this.commandColumnTitle() ? this.commandColumnTitle() : (this.language() === "tr" ? "İşlemler" : "Operations"));
+  readonly groupedDataSignal = computed(() => {
+    if(this.groupable() && this.groupableField() && this.pagedData()){
+      const grouped = this.buildTree(this.pagedData(), this.groupableField());
+      const allCodes = this.collectAllGroupCodes(grouped);
+      this.normalExpandedNodes = new Set(allCodes);
+      return grouped;
+    }
+
+    return [];
+  });
+  normalExpandedNodes = new Set();
+  readonly expandedNodes = linkedSignal(() => this.normalExpandedNodes);
+  globalRowIndex = 0;
+  readonly pageableSignal = computed(() => this.pageable() && !this.groupable());
+  readonly heightSignal = computed(() => this.autoHeight() ? '100%' : this.height());
 
   readonly dataStateChange = output<any>();
   readonly onChange = output<any>();
@@ -140,6 +157,8 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   readonly clearBtnText = computed(() => this.language() === "tr" ? "Temizle" : "Clear");
   readonly selected = computed(() => this.language() === "tr" ? "Seçilen" : "Selected");
   readonly refreshText = computed(() => this.language() === "tr" ? "Yenile" : "Refresh");
+  readonly collapseAllText = computed(() => this.language() === "en" ? "Collapse All" : "Tümünü Daralt");
+  readonly expandAllText = computed(() => this.language() === "en" ? "Expand All" : "Tümünü Genişlet");
 
   readonly columns = contentChildren(FlexiGridColumnComponent, {descendants: true});
 
@@ -172,7 +191,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
       }
     }
 
-    if (this.pageable()) {
+    if (this.pageableSignal()) {
       this.setPageNumbers();
       this.updatePagedData();
     } else {
@@ -251,6 +270,85 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
         ]);
       break;
     }
+  }
+
+  buildTree(data: any[], groupField: string): any[] {
+    const map = new Map<string, any>();
+    const roots: any[] = [];
+
+    for (const item of data) {
+      const node = { ...item, children: [] };
+      map.set(item[groupField], node);
+    }
+
+    for (const item of data) {
+      const parts = item[groupField].split(".");
+      if (parts.length === 1) {
+        roots.push(map.get(item[groupField]));
+      } else {
+        const parentCode = parts.slice(0, parts.length - 1).join(".");
+        const parent = map.get(parentCode);
+        if (parent) {
+          parent.children.push(map.get(item[groupField]));
+        } else {
+          roots.push(map.get(item[groupField]));
+        }
+      }
+    }
+
+    return roots;
+  }
+
+  collectAllGroupCodes(nodes: any[]): string[] {
+    const codes: string[] = [];
+
+    const traverse = (items: any[]) => {
+      for (const item of items) {
+        if (item.children && item.children.length > 0) {
+          codes.push(item[this.groupableField()]);
+          traverse(item.children);
+        }
+      }
+    };
+
+    traverse(nodes);
+    return codes;
+  }
+
+  expandAll(){
+    const grouped = this.groupedDataSignal();
+    const allCodes = this.collectAllGroupCodes(grouped);
+    this.expandedNodes.set(new Set(allCodes));
+  }
+
+  collapseAll(){
+    this.expandedNodes.set(new Set());
+  }
+
+  toggleNodeExpand(code: string) {
+    const set = new Set(this.expandedNodes());
+    if (set.has(code)) {
+      set.delete(code);
+    } else {
+      set.add(code);
+    }
+    this.expandedNodes.set(set);
+  }
+
+  isNodeExpanded(code: string): boolean {
+    return this.expandedNodes().has(code);
+  }
+
+  resetGlobalRowIndex(): void {
+    this.globalRowIndex = 0;
+  }
+
+  getNextGlobalRowIndex(): number {
+    const pageNumber = this.state().pageNumber - 1;
+    const pageSize = this.state().pageSize;
+    const nextValue = (+this.globalRowIndex + 1) + (pageNumber * pageSize);
+    this.globalRowIndex = +nextValue;
+    return nextValue;
   }
 
   giveFilterValueByFilterType(filterType: string) {
@@ -390,7 +488,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
       pageNumber: 1,
       skip: 0
     }));
-    if (this.pageable() && this.dataBinding()) {
+    if (this.pageableSignal() && this.dataBinding()) {
       this.dataStateChange.emit(this.state());
     } else {
       this.updatePagedData();
@@ -398,7 +496,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   }
 
   updatePagedData() {
-    let filteredData = this.dataSignal();
+    let filteredData = [...this.dataSignal()];
 
     if (!filteredData) {
       this.pagedData.set([]);
@@ -504,7 +602,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     }
 
     if (filteredData) {
-      if (filteredData.length > +this.state().pageSize && !dataBinding && this.pageable()) {
+      if (filteredData.length > +this.state().pageSize && !dataBinding && this.pageableSignal()) {
         const start = this.state().skip;
         const end = start + +this.state().pageSize;
         this.pagedData.set(filteredData.slice(start, end));
@@ -518,13 +616,13 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     if (this.dataBinding()) {
       this.dataStateChange.emit(this.state());
     } else {
-      this.dataSignal.set(this.dataSignal().sort((a, b) => {
+      this.dataSignal.set([...this.dataSignal().sort((a, b) => {
         const field = this.state().sort.field;
         const dir = this.state().sort.dir === 'asc' ? 1 : -1;
         if (a[field] < b[field]) return -1 * dir;
         if (a[field] > b[field]) return 1 * dir;
         return 0;
-      }));
+      })]);
       this.updatePagedData();
     }
   }
@@ -818,7 +916,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     let className: string = column.className();
 
     if (className !== "") className += " ";
-    className += column.hideOverflow() ? 'text-overflow-hidden' : ''
+    className += column.hideOverflow() ? 'flexi-grid-text-overflow-hidden' : ''
 
     return className;
   }
@@ -827,10 +925,6 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     const style: { [key: string]: any } = {
       ...this.tbodyStyle()
     };
-
-    if (this.useMinHeight()) {
-      style['min-height'] = this.minHeight();
-    }
     return style;
   }
 

@@ -9,32 +9,40 @@
       @if(captionCommandTemplate()){
         <ng-container *ngTemplateOutlet="captionCommandTemplate()!" />
       }
+
+      @if(groupable() && groupableField()){
+        <flexi-button (click)="expandAll()" btnSize="medium" btnIcon="unfold_more" btnColor="dark" flexiTooltip="left" [title]="expandAllText()" />
+        <flexi-button (click)="collapseAll()" btnSize="medium" btnIcon="unfold_less" btnColor="pink" flexiTooltip="left" [title]="collapseAllText()" />
+      }
+
       @if(showExportExcelBtn()){
-      <flexi-button btnIcon="file_save" flexiTooltip btnSize="medium" [title]="exportExcelText()" btnColor="warning"
-        (click)="onExportExcelButtonClick()" />
-      }@if(showColumnVisibility()){
-      <div style="position: relative">
-        <flexi-button btnIcon="menu" btnColor="info" btnSize="medium" flexiTooltip [title]="columnVisibility()"
-          (click)="toggleColumnVisibilityDropdown()" />
-        <div class="flexi-grid-dropdown-menu" style="top: 40px" id="flexi-grid-column-visibility-dropdown-{{timeStamp()}}">
-          <div style="padding: 10px; padding-bottom: 2px; background-color: var(--flexi-grid-bg-color-part)">
-            <div class="flexi-grid-dropdown-title">{{ columnVisibility() }}</div>
-            <div class="flexi-grid-bottom-line"></div>
-            @for(column of getColumns(); track trackByFn()){
-            <label class="flexi-grid-dropdown-checkbox-item" [for]="column.field() ? column.field() : column.title()">
-              <input [(ngModel)]="column.visibleSignal" [id]="column.field() ? column.field() : column.title()"
-                type="checkbox" />
-              <span style="margin-left: 3px;">
-                {{ column.title() ? column.title() : column.field() }}
-              </span>
-            </label>
-            }
+        <flexi-button btnIcon="file_save" flexiTooltip btnSize="medium" [title]="exportExcelText()" btnColor="warning" (click)="onExportExcelButtonClick()" />
+      }
+
+      @if(showColumnVisibility()){
+        <div style="position: relative">
+          <flexi-button btnIcon="menu" btnColor="info" btnSize="medium" flexiTooltip [title]="columnVisibility()"
+            (click)="toggleColumnVisibilityDropdown()" />
+          <div class="flexi-grid-dropdown-menu" style="top: 40px" id="flexi-grid-column-visibility-dropdown-{{timeStamp()}}">
+            <div style="padding: 10px; padding-bottom: 2px; background-color: var(--flexi-grid-bg-color-part)">
+              <div class="flexi-grid-dropdown-title">{{ columnVisibility() }}</div>
+              <div class="flexi-grid-bottom-line"></div>
+              @for(column of getColumns(); track trackByFn()){
+              <label class="flexi-grid-dropdown-checkbox-item" [for]="column.field() ? column.field() : column.title()">
+                <input [(ngModel)]="column.visibleSignal" [id]="column.field() ? column.field() : column.title()"
+                  type="checkbox" />
+                <span style="margin-left: 3px;">
+                  {{ column.title() ? column.title() : column.field() }}
+                </span>
+              </label>
+              }
+            </div>
           </div>
         </div>
-      </div>
-      }@if(showRefreshBtn() || dataBinding()){
-      <flexi-button btnIcon="refresh" btnColor="dark" btnSize="medium" flexiTooltip [title]="refreshText()"
-        (click)="refreshDataMethod()" />
+      }
+
+      @if(showRefreshBtn() || dataBinding()){
+        <flexi-button btnIcon="refresh" btnColor="dark" btnSize="medium" flexiTooltip [title]="refreshText()" (click)="refreshDataMethod()" />
       }
     </div>
   </div>
@@ -55,32 +63,32 @@
           <thead role="rowgroup">
             <tr role="row">
               @if(selectable()){
-              <th [ngStyle]="{
-                    width: selectableWidth(),
-                    'text-align': selectableTextAlign()
-                  }" scope="col" role="columnheader" (click)="toggleSelectAll()">
-                <input class="checkbox-custom" type="checkbox" style="transform: scale(1.3);" [ngModel]="allSelected()"
-                  [indeterminate]="allSelectedWasIndeterminate()">
-              </th>
+                <th [ngStyle]="{
+                      width: selectableWidth(),
+                      'text-align': selectableTextAlign()
+                    }" scope="col" role="columnheader" (click)="toggleSelectAll()">
+                  <input class="checkbox-custom" type="checkbox" style="transform: scale(1.3);" [ngModel]="allSelected()"
+                    [indeterminate]="allSelectedWasIndeterminate()">
+                </th>
               }
 
-              @if(reorderable()){
-              <th [ngStyle]="{
-                  width: reOrderWidth(),
-                  'text-align': reOrderTextAlign()
-                }" scope="col" role="columnheader">
-                <span></span>
-              </th>
+              @if(reorderable() && !groupable()){
+                <th [ngStyle]="{
+                    width: reOrderWidth(),
+                    'text-align': reOrderTextAlign()
+                  }" scope="col" role="columnheader">
+                  <span></span>
+                </th>
               }
 
               @if(showIndex()){
-              <th [ngStyle]="{
-                  'cursor': 'auto',
-                  width: indexWidth(),
-                  'text-align': indexTextAlign()
-                }" scope="col" role="columnheader">
-                <span>#</span>
-              </th>
+                <th [ngStyle]="{
+                    'cursor': 'auto',
+                    width: indexWidth(),
+                    'text-align': indexTextAlign()
+                  }" scope="col" role="columnheader">
+                  <span style="font-weight: bold;">#</span>
+                </th>
               }
 
               @for(column of getColumns(); track trackByFn(); let columnIndex = $index){
@@ -191,20 +199,23 @@
             </tr>
             <tr class="flexi-grid-filter-tr" #filterTr role="row" role="columnheader">
               @if(selectable() && !isShowMobileFilter()){
-              <th class="flexi-grid-filter-th" [ngStyle]="{
-                  width: selectableWidth(),
-                  textAlign: selectableTextAlign(),
-                  cursor: 'pointer'
-                }" scope="col" role="columnheader">
-              </th>
+                <th class="flexi-grid-filter-th" [ngStyle]="{
+                    width: selectableWidth(),
+                    textAlign: selectableTextAlign(),
+                    cursor: 'pointer'
+                  }" scope="col" role="columnheader">
+                </th>
               }
-              @if(reorderable() && !isShowMobileFilter()){
-              <th class="flexi-grid-filter-th" [ngStyle]="{ width: reOrderWidth() }" scope="col" role="columnheader">
-              </th>
+
+              @if(reorderable() && !isShowMobileFilter() && !groupable()){
+                <th class="flexi-grid-filter-th" [ngStyle]="{ width: reOrderWidth() }" scope="col" role="columnheader">
+                </th>
               }
+
               @if(showIndex() && !isShowMobileFilter()){
-              <th class="flexi-grid-filter-th" [ngStyle]="{ width: indexWidth() }" scope="col" role="columnheader"></th>
+                <th class="flexi-grid-filter-th" [ngStyle]="{ width: indexWidth() }" scope="col" role="columnheader"></th>
               }
+
               @for(column of getColumns(); track trackByFn()){
                 @if(column.filterable()){
                 <th class="flexi-grid-filter-th" [hidden]="!column.visibleSignal()"
@@ -320,148 +331,175 @@
       </div>
     </div>
 
-    <div class="flexi-grid-tbody-wrapper">
+    <div class="flexi-grid-tbody-wrapper" [style.height]="heightSignal()" [style.minHeight]="useMinHeight() ? minHeight() : heightSignal()">
       <div class="flexi-grid-tbody-wrapper-inner">
-        <table class="flexi-grid-table" [ngStyle]="{
-            'min-width': !useMinWidth() ? '100%' : minWidth(),
-            position: 'relative'
-          }" aria-label="Flexi Grid Table" role="table">
-          <tbody cdkDropList [cdkDropListDisabled]="!reorderable()" (cdkDropListDropped)="drop($event)" #tbody
-            class="flexi-grid-p-relative" [ngStyle]="getTBodyStyle()" role="rowgroup">
-            @if(data().length > 0 || prevData().length > 0){
-              @for(item of (pagedData().length > 0 ? pagedData() : prevData()); track trackByFn(); let i = $index){
-                <tr cdkDrag [cdkDragDisabled]="!reorderable()"
-                  [ngClass]="{'flexi-grid-selected-row': selectedRows().has(item)}"
-                  [ngStyle]="{ 'min-height': trMinHeight() }" role="row">
-                  @if(selectable()){
-                    <td [ngStyle]="{
-                          width: selectableWidth(),
-                          textAlign: selectableTextAlign(),
-                          userSelect: 'none',
-                          cursor: 'pointer'
-                        }" [attr.data-label]="'#'" scope="cell" (click)="toggleRowSelection(item)">
-                      <input class="checkbox-custom" type="checkbox" style="transform: scale(1.3);"
-                        [checked]="checked(item)" id="flexi-grid-column-selectable-checkbox-{{timeStamp()}}">
-                    </td>
-                  }
-
-                  @if(reorderable()){
-                  <td cdkDragHandle [ngStyle]="{
-                          'width': reOrderWidth(),
-                          'text-align': reOrderTextAlign(),
-                          'cursor':'pointer',
-                          'user-select': 'none'
-                        }" [attr.data-label]="'#'" scope="cell">
-                    <span class="material-symbols-outlined">
-                      reorder
-                    </span>
-                  </td>
-                  }
-
-                  @if(showIndex()){
-                  <td [ngStyle]="{
-                        width: indexWidth(),
-                        'text-align': indexTextAlign()
-                      }" [attr.data-label]="'#'" scope="cell">
-                    @if(!pageable()){
-                    <span>{{ $index + 1 }}</span>
-                    }@else {
-                    <span>{{$index + (state().pageNumber - 1) * +state().pageSize + 1}}</span>
+        <table class="flexi-grid-table"
+              [ngStyle]="{
+                  minWidth: !useMinWidth() ? '100%' : minWidth(),
+                  position: 'relative'
+              }"
+              aria-label="Flexi Grid Table"
+              role="table"
+        >
+          @if(groupable() && groupableField()){
+            <tbody cdkDropList [cdkDropListDisabled]="!reorderable()" (cdkDropListDropped)="drop($event)" #tbody class="flexi-grid-p-relative" [ngStyle]="getTBodyStyle()" role="rowgroup">
+              @if(data().length > 0 || prevData().length > 0){
+                @if(showIndex()){
+                  {{resetGlobalRowIndex()}}
+                }
+                @for(item of groupedDataSignal(); track item){
+                  <ng-container *ngTemplateOutlet="treeRow; context: { $implicit: item, level: 0 }"></ng-container>
+                }
+              }@else {
+                @if(!loading()){
+                  <div class="flexi-grid-no-data-div">
+                    <span class="flexi-grid-no-data-title"><i>{{ noData() }}</i></span>
+                  </div>
+                }
+              }
+            </tbody>
+          }@else {
+            <tbody cdkDropList [cdkDropListDisabled]="!reorderable()" (cdkDropListDropped)="drop($event)" #tbody class="flexi-grid-p-relative" [ngStyle]="getTBodyStyle()" role="rowgroup">
+              @if(data().length > 0 || prevData().length > 0){
+                @for(item of (pagedData().length > 0 ? pagedData() : prevData()); track trackByFn(); let i = $index){
+                  <tr cdkDrag [cdkDragDisabled]="!reorderable()"
+                    [ngClass]="{'flexi-grid-selected-row': selectedRows().has(item)}"
+                    [ngStyle]="{ 'min-height': trMinHeight() }" role="row">
+                    @if(selectable()){
+                      <td [ngStyle]="{
+                            width: selectableWidth(),
+                            textAlign: selectableTextAlign(),
+                            userSelect: 'none',
+                            cursor: 'pointer'
+                          }" [attr.data-label]="'#'" scope="cell" (click)="toggleRowSelection(item)">
+                        <input class="checkbox-custom" type="checkbox" style="transform: scale(1.3);"
+                          [checked]="checked(item)" id="flexi-grid-column-selectable-checkbox-{{timeStamp()}}">
+                      </td>
                     }
-                  </td>
-                  }
 
-                  @for(column of getColumns(); track trackByFn()){
-                  <td [ngStyle]="{
-                        width: column.widthSignal(),
-                        'text-align': column.textAlign()
-                      }" (click)="toggleRowSelection(item[selectableField()])" [hidden]="!column.visibleSignal()"
-                    [ngClass]="tdTemplateClassName(column)"
-                    [attr.data-label]="column.title() ? column.title() : column.field()" [title]="
-                        item && !column.cellTemplate()
-                          ? getFieldValue(item, column.field())
-                          : ''
-                      " scope="cell">
-                      @if(column.cellTemplate()){
-                      <ng-container *ngTemplateOutlet="
-                            column.cellTemplate();
-                            context: { $implicit: item, column: column, rowIndex: i }
-                          " />
-                      }@else{
-                        @if(column.field()){
-                          @if((column.filterType() === "date" || column.filterType() === "date-time") && column.filterType()){
-                          {{ getFieldValue(item, column.field()) | date : column.format()! }}
-                          }@else if(column.filterType() === "number" && column.filterType()){
-                            @if(column.format() === "n" || column.format() === null){
-                            {{ getFieldValue(item, column.field()) | trCurrency : "" : true : column.fraction() }}
-                              }@else if(column.format() === "c"){
-                            {{
-                            getFieldValue(item, column.field())
-                            | trCurrency
-                            : column.symbol()
-                            : column.showSymbolInFront()
-                            : column.fraction()
-                            }}
-                            }
-                          }@else if(column.filterType() === "boolean"){
-                            @if(column.showCheckbox()){
-                            <input class="flexi-grid-checkbox" type="checkbox" [checked]="getFieldValue(item, column.field())"
-                              (change)="getBooleanInputValue(item, column, $event)" />
-                            }@else {
-                            @if(getFieldValue(item, column.field())){
-                            <span class="flexi-grid-card flexi-grid-card-success">
-                              {{ column.booleanData()[0] }}
-                            </span>
-                            }@else {
-                            <span class="flexi-grid-card flexi-grid-card-danger">
-                              {{ column.booleanData()[1] }}
-                            </span>
-                            }
-                          }
+                    @if(reorderable()){
+                      <td cdkDragHandle [ngStyle]="{
+                              'width': reOrderWidth(),
+                              'text-align': reOrderTextAlign(),
+                              'cursor':'pointer',
+                              'user-select': 'none'
+                            }"
+                            [attr.data-label]="'#'"
+                            scope="cell">
+                        <span class="material-symbols-outlined">
+                          reorder
+                        </span>
+                      </td>
+                    }
+
+                    @if(showIndex()){
+                      <td [ngStyle]="{
+                            width: indexWidth(),
+                            'text-align': indexTextAlign()
+                          }"
+                          [attr.data-label]="'#'"
+                          scope="cell">
+                        @if(!pageableSignal()){
+                        <span style="font-weight: bold;">{{ $index + 1 }}</span>
                         }@else {
-                          {{ getFieldValue(item, column.field()) }}
+                        <span style="font-weight: bold;">{{$index + (state().pageNumber - 1) * +state().pageSize + 1}}</span>
+                        }
+                      </td>
+                    }
+
+                    @for(column of getColumns(); track trackByFn()){
+                    <td [ngStyle]="{
+                          width: column.widthSignal(),
+                          'text-align': column.textAlign()
+                        }"
+                        (click)="toggleRowSelection(item[selectableField()])"
+                        [hidden]="!column.visibleSignal()"
+                        [ngClass]="tdTemplateClassName(column)"
+                        [attr.data-label]="column.title() ? column.title() : column.field()" [title]="
+                          item && !column.cellTemplate()
+                            ? getFieldValue(item, column.field())
+                            : ''
+                        "
+                        scope="cell">
+                        @if(column.cellTemplate()){
+                        <ng-container *ngTemplateOutlet="
+                              column.cellTemplate();
+                              context: { $implicit: item, column: column, rowIndex: i }
+                            " />
+                        }@else{
+                          @if(column.field()){
+                            @if((column.filterType() === "date" || column.filterType() === "date-time") && column.filterType()){
+                            {{ getFieldValue(item, column.field()) | date : column.format()! }}
+                            }@else if(column.filterType() === "number" && column.filterType()){
+                              @if(column.format() === "n" || column.format() === null){
+                              {{ getFieldValue(item, column.field()) | trCurrency : "" : true : column.fraction() }}
+                                }@else if(column.format() === "c"){
+                              {{
+                              getFieldValue(item, column.field())
+                              | trCurrency
+                              : column.symbol()
+                              : column.showSymbolInFront()
+                              : column.fraction()
+                              }}
+                              }
+                            }@else if(column.filterType() === "boolean"){
+                              @if(column.showCheckbox()){
+                              <input class="flexi-grid-checkbox" type="checkbox" [checked]="getFieldValue(item, column.field())"
+                                (change)="getBooleanInputValue(item, column, $event)" />
+                              }@else {
+                              @if(getFieldValue(item, column.field())){
+                              <span class="flexi-grid-card flexi-grid-card-success">
+                                {{ column.booleanData()[0] }}
+                              </span>
+                              }@else {
+                              <span class="flexi-grid-card flexi-grid-card-danger">
+                                {{ column.booleanData()[1] }}
+                              </span>
+                              }
+                            }
+                          }@else {
+                            {{ getFieldValue(item, column.field()) }}
+                          }
                         }
                       }
+                    </td>
                     }
-                  </td>
-                  }
-                  @if(columnCommandTemplate()){
-                  <td [ngStyle]="{
-                        width: commandColumnWidth(),
-                        'text-align': commandColumnTextAlign()
-                      }"
-                    [ngClass]="{'flexi-grid-selected-row': selectedRows().has(item), 'flexi-sticky-column flexi-sticky-td-column': stickyCommandColumn()}"
-                    [attr.data-label]="commandColumnTitleSignal()" scope="cell">
-                    @if(useCommandDropdown()){
-                      <div class="flexi-grid-command-dropdown">
-                        <flexi-button btnColor="primary" btnSize="small" btnIcon="more_vert" />
-                        <div class="flexi-grid-command-dropdown-content">
-                          <div class="flexi-grid-command-display-flex">
-                              <ng-container *ngTemplateOutlet="
-                                    columnCommandTemplate()!;
-                                    context: { $implicit: item, index: i}" />
+                    @if(columnCommandTemplate()){
+                    <td [ngStyle]="{
+                          width: commandColumnWidth(),
+                          'text-align': commandColumnTextAlign()
+                        }"
+                      [ngClass]="{'flexi-grid-selected-row': selectedRows().has(item), 'flexi-sticky-column flexi-sticky-td-column': stickyCommandColumn()}"
+                      [attr.data-label]="commandColumnTitleSignal()" scope="cell">
+                      @if(useCommandDropdown()){
+                        <div class="flexi-grid-command-dropdown">
+                          <flexi-button btnColor="primary" btnSize="small" btnIcon="more_vert" />
+                          <div class="flexi-grid-command-dropdown-content">
+                            <div class="flexi-grid-command-display-flex">
+                                <ng-container *ngTemplateOutlet="
+                                      columnCommandTemplate()!;
+                                      context: { $implicit: item, index: i}" />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    }@else {
-                      <div class="flexi-grid-command-display-flex">
-                          <ng-container *ngTemplateOutlet="
-                                columnCommandTemplate()!;
-                                context: { $implicit: item, index: i}" />
-                      </div>
+                      }@else {
+                        <div class="flexi-grid-command-display-flex">
+                            <ng-container *ngTemplateOutlet="columnCommandTemplate()!; context: { $implicit: item, index: i}" />
+                        </div>
+                      }
+                    </td>
                     }
-                  </td>
-                  }
-                </tr>
+                  </tr>
+                }
+              }@else {
+                @if(!loading()){
+                <div class="flexi-grid-no-data-div">
+                  <span class="flexi-grid-no-data-title"><i>{{ noData() }}</i></span>
+                </div>
+                }
               }
-            }@else {
-              @if(!loading()){
-              <div class="flexi-grid-no-data-div">
-                <span class="flexi-grid-no-data-title"><i>{{ noData() }}</i></span>
-              </div>
-              }
-            }
-          </tbody>
+            </tbody>
+          }
           <tfoot class="flexi-grid-foot">
             @for(footerIndex of getMaxFooterTemplateCount(); track footerIndex){
               <tr>
@@ -470,22 +508,26 @@
                     width: selectableWidth()
                   }"></td>
                 }
+
                 @if(reorderable()){
                   <td [ngStyle]="{
                     width: reOrderWidth()
                   }"></td>
                 }
+
                 @if(showIndex()){
                   <td [ngStyle]="{
                     width: indexWidth()
                   }"></td>
                 }
+
                 @for(column of getColumns(); track column){
                   <td
                     [ngStyle]="{
                       width: column.widthSignal(),
-                      'text-align': column.textAlign()
-                    }" [hidden]="!column.visibleSignal()"
+                      textAlign: column.textAlign()
+                    }"
+                    [hidden]="!column.visibleSignal()"
                     [ngClass]="tdTemplateClassName(column)">
                       <div class="flexi-grid-cell-footer">
                         @if(column.footerTemplates()[footerIndex]){
@@ -513,7 +555,7 @@
       </div>
     </div>
   </div>
-  @if(pageable()){
+  @if(pageableSignal()){
   <div class="flexi-grid-pagination-container">
     @if(!isShowMobileFilter()){
     <div class="flexi-grid-pagination-part-one">
@@ -583,3 +625,97 @@
   }
 </div>
 }
+
+<ng-template #treeRow let-node let-level="level">
+  <tr [ngClass]="{'flexi-grid-selected-row': selectedRows().has(level)}"
+      [ngStyle]="{ 'min-height': trMinHeight() }" role="row">
+    @if(selectable()){
+      <td [ngStyle]="{
+            width: selectableWidth(),
+            textAlign: selectableTextAlign(),
+            userSelect: 'none',
+            cursor: 'pointer'
+          }"
+          (click)="toggleRowSelection(node)">
+        <input class="checkbox-custom" type="checkbox" style="transform: scale(1.3);" [checked]="checked(node)">
+      </td>
+    }
+
+    @if(reorderable() && !groupable()){
+      <td [ngStyle]="{
+            'width': reOrderWidth(),
+            'text-align': reOrderTextAlign(),
+            'cursor':'pointer',
+            'user-select': 'none'
+          }"
+          [attr.data-label]="'#'"
+          scope="cell"
+      >
+        <span class="material-symbols-outlined">reorder</span>
+      </td>
+    }
+
+    @if(showIndex()){
+      <td [ngStyle]="{
+          width: indexWidth(),
+          textAlign: indexTextAlign()
+        }"
+        [attr.data-label]="'#'"
+        scope="cell"
+      >
+        <span style="font-weight: bold;">{{ getNextGlobalRowIndex() }}</span>
+      </td>
+    }
+
+    @for(column of getColumns(); track column; let columnIndex = $index){
+      <td [ngStyle]="{
+            width: column.widthSignal(),
+            textAlign: column.textAlign()
+          }"
+          [ngClass]="tdTemplateClassName(column)"
+          [hidden]="!column.visibleSignal()"
+          [attr.data-label]="column.title() || column.field()"
+          scope="cell"
+          [style.padding-left.px]="columnIndex  === 0 ? (level * 40) + 10 : 10"
+      >
+          @if(columnIndex === 0 && node.children && node.children.length > 0){
+            <span
+              class="material-symbols-outlined"
+              style="cursor: pointer; vertical-align: middle; margin-right: 4px;"
+              (click)="toggleNodeExpand(node[groupableField()])"
+            >
+              {{ isNodeExpanded(node[groupableField()]) ? 'keyboard_arrow_down' : 'chevron_right' }}
+            </span>
+          }
+
+          @if(column.cellTemplate()){
+            <ng-container *ngTemplateOutlet="column.cellTemplate(); context: { $implicit: node, column: column }" />
+          }@else{
+            {{ getFieldValue(node, column.field()) }}
+          }
+      </td>
+    }
+
+    @if(columnCommandTemplate()){
+      <td [ngStyle]="{
+            width: commandColumnWidth(),
+            'text-align': commandColumnTextAlign()
+          }"
+          [ngClass]="{'flexi-grid-selected-row': selectedRows().has(level), 'flexi-sticky-column flexi-sticky-td-column': stickyCommandColumn()}"
+          [attr.data-label]="commandColumnTitleSignal()" scope="cell"
+      >
+        <div class="flexi-grid-command-display-flex">
+          <ng-container *ngTemplateOutlet="columnCommandTemplate()!; context: { $implicit: node }" />
+        </div>
+      </td>
+    }
+  </tr>
+
+  @if(node.children && node.children.length > 0){
+    @if(isNodeExpanded(node[groupableField()])){
+      @for(child of node.children; track child){
+        <ng-container *ngTemplateOutlet="treeRow; context: { $implicit: child, level: level + 1 }"></ng-container>
+      }
+    }
+  }
+</ng-template>

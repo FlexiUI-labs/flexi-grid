@@ -1,0 +1,58 @@
+<flexi-grid
+[data]="data()"
+[loading]="loading()"
+[showFilterPanel]="true"
+themeClass="light"
+[showCaption]="true"
+captionTitle="User List"
+[groupable]="true"
+groupableField="code"
+[showIndex]="true"
+[reorderable]="false"
+[selectable]="false"
+height="200px"
+[useMinHeight]="true"
+[autoHeight]="true"
+(onRefresh)="result.reload()">
+    <flexi-grid-column field="code" title="Code">
+        <ng-template flexiGridFooterTemplate>
+            <span>Total</span>
+        </ng-template>
+    </flexi-grid-column>
+    <flexi-grid-column field="type" title="Type" />
+    <flexi-grid-column field="name" title="Name" />
+
+    <ng-template flexiGridColumnCommandTemplate let-item>
+        <flexi-button btnSize="small" btnColor="primary" btnIcon="zoom_in" title="Detail" flexiTooltip />
+        <flexi-button btnSize="small" btnColor="info" btnIcon="edit" title="Edit" flexiTooltip />
+        <flexi-button btnSize="small" btnColor="pink" btnIcon="delete" title="Remove" flexiTooltip />
+    </ng-template>
+</flexi-grid>
+<div style="margin-bottom: 20px;"></div>
+<flexi-grid
+[data]="data()"
+[loading]="loading()"
+[showFilterPanel]="true"
+themeClass="light"
+[showCaption]="true"
+captionTitle="User List"
+[groupable]="false"
+groupableField="code"
+[showIndex]="true"
+[reorderable]="true"
+[selectable]="true"
+(onRefresh)="result.reload()">
+    <flexi-grid-column field="code" title="Code">
+        <ng-template flexiGridFooterTemplate>
+            <span>Total</span>
+        </ng-template>
+    </flexi-grid-column>
+    <flexi-grid-column field="type" title="Type" />
+    <flexi-grid-column field="name" title="Name" />
+
+    <ng-template flexiGridColumnCommandTemplate let-item>
+        <flexi-button btnSize="small" btnColor="primary" btnIcon="zoom_in" title="Detail" flexiTooltip />
+        <flexi-button btnSize="small" btnColor="info" btnIcon="edit" title="Edit" flexiTooltip />
+        <flexi-button btnSize="small" btnColor="pink" btnIcon="delete" title="Remove" flexiTooltip />
+    </ng-template>
+</flexi-grid>

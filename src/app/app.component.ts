@@ -1,24 +1,9 @@
-import { Component, computed, inject, resource } from '@angular/core';
-import { FlexiGridModule } from '../../library/src/lib/modules/flexi-grid.module';
-import { HttpClient } from '@angular/common/http';
-import { lastValueFrom } from 'rxjs';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [FlexiGridModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [RouterOutlet],
+  template: `<router-outlet />`
 })
-export class AppComponent {
-  readonly result = resource({
-    loader: async() => {
-      const res = await lastValueFrom(this.#http.get<any[]>("https://jsonplaceholder.typicode.com/users"));
-      return res;
-    }
-  });
-
-  readonly data = computed(() => this.result.value() ?? []);
-  readonly loading = computed(() => this.result.isLoading());
-
-  readonly #http = inject(HttpClient);
-}
+export class AppComponent {}

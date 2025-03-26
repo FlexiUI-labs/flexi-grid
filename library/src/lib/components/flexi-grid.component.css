@@ -256,7 +256,7 @@ flexi-button {
   z-index: 1;
 }
 
-.text-overflow-hidden {
+.flexi-grid-text-overflow-hidden {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -694,4 +694,9 @@ flexi-button {
 .flexi-grid-selected-row {
   background-color: var(--flexi-grid-selected-bg-color) !important;
   color: var(--flexi-grid-selected-text-color) !important;
+}
+
+.flexi-grid-sortable-th span.material-symbols-outlined {
+  color: #0d6efd;
+  margin-left: 6px;
 }
