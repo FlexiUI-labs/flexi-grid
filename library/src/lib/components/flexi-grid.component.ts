@@ -864,7 +864,8 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     try {
       if (!field.includes(".")) {
         const value = item[field];
-        return value !== undefined && value !== null ? value : "";
+        const returnValue = (value !== undefined && value !== null) ? value : ""
+        return returnValue;
       } else {
         const fields = field.split(".");
         let currentValue = item;

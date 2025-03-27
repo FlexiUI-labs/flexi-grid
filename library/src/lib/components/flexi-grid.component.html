@@ -92,86 +92,86 @@
               }
 
               @for(column of getColumns(); track trackByFn(); let columnIndex = $index){
-              <th class="flexi-grid-border" [hidden]="!column.visibleSignal()"
-                [ngStyle]="{ width: column.widthSignal() }" scope="col" role="columnheader"
-                [attr.aria-sort]="getSortState('name')">
-                <div [ngClass]="setTextAlignForTh(filterable(), column)">
-                  @if(resizable() && column.resizable()){
-                    <div class="flexi-grid-resize-handle" (mousedown)="onMouseDown($event, column, column.widthSignal())" (dblclick)="autoFitColumnWidth(column)">
-                    </div>
-                  }
-                  @if(sortable() && column.sortable() && column.field() && data().length > 0){
-                    <div (click)="sort(sortable(), column)" class="flexi-grid-sortable-th" [ngClass]="setTextAlignForThTitle(filterable(), column)">
-                      <span>
-                        {{column.title() ? column.title() : column.field()}}
-                      </span>
-                      <div class="flexi-grid-d-flex">
-                        @if(this.state().sort.field === column.field()){
-                          @if(state().sort.dir === "asc"){
-                            <span class="material-symbols-outlined">
-                              arrow_upward_alt
-                            </span>
-                          }@else{
-                            <span class="material-symbols-outlined">
-                              arrow_downward_alt
-                            </span>
-                          }
-                        }
+                <th class="flexi-grid-border" [hidden]="!column.visibleSignal()"
+                  [ngStyle]="{ width: column.widthSignal() }" scope="col" role="columnheader"
+                  [attr.aria-sort]="getSortState('name')">
+                  <div [ngClass]="setTextAlignForTh(filterable(), column)">
+                    @if(resizable() && column.resizable()){
+                      <div class="flexi-grid-resize-handle" (mousedown)="onMouseDown($event, column, column.widthSignal())" (dblclick)="autoFitColumnWidth(column)">
                       </div>
-                    </div>
-                  }@else {
-                    <div>
-                      <span>{{column.title() ? column.title() : column.field()}}</span>
-                    </div>
-                  } @if(filterable() && column.filterable()){
-                    <div class="flexi-grid-p-relative flexi-grid-d-flex flexi-grid-no-flex-wrap" [ngClass]="!(column.field() && haveFilterValue(column.filterType())) ? 'flexi-grid-disabled' : ''">
-                      <div class="flexi-grid-p-relative">
-                        <span class="material-symbols-outlined flexi-grid-cursor flexi-grid-filter" [ngClass]="{'flexi-grid-filter-filled': column.filterValueSignal()}" (click)="toggleFilterDropdown(columnIndex, column.timeStamp())">
-                          filter_list
+                    }
+                    @if(sortable() && column.sortable() && column.field() && data().length > 0){
+                      <div (click)="sort(sortable(), column)" class="flexi-grid-sortable-th" [ngClass]="setTextAlignForThTitle(filterable(), column)">
+                        <span>
+                          {{column.title() ? column.title() : column.field()}}
                         </span>
-                        @if(column.filterValueSignal()){
-                          <span class="material-symbols-outlined" style="position: absolute; font-size: 10px; top: 3px; right: 1px;">
-                            asterisk
-                          </span>
-                        }
-                      </div>
-                      <div class="flexi-grid-dropdown-menu flexi-grid-filter-dropdown" id="flexi-grid-filter-dropdown-{{columnIndex}}-{{column.timeStamp()}}" [ngClass]="
-                          column.textAlign() === 'right'
-                            ? 'flexi-grid-dropdown-menu-right'
-                            : ''
-                        ">
-                        <div class="flexi-grid-filter-dropdown-content">
-                          <select class="flexi-grid-filter-dropdown-select" name="flexi-filter-select-{{column.timeStamp()}}" [(ngModel)]="column.filterOperator" (change)="applyFilter(column, column.filterOperator())">
-                            @for(filterType of giveFilterValueByFilterType(column.filterType()); track filterType.operator){
-                              <option [value]="filterType.operator">{{ filterType.value }}</option>
-                            }
-                          </select>
-                          <div class="flexi-grid-p-relative">
-                            <input [type]="setDropdownInputType(column)" [ngClass]="setDropdownInputClass(column)" [(ngModel)]="column.filterValueSignal" name="filexi-filter-input-{{column.timeStamp()}}" (input)="
-                            filter(
-                              column.field(),
-                              column.filterOperator(),
-                              column.filterValueSignal(),
-                              column.filterType(),
-                              column.filterValue2Signal()
-                            )
-                          ">
-                            @if(column.filterType() === "text" || column.filterType() === "number"){
-                              <span class="material-symbols-outlined flexi-grid-filter-dropdown-input-search-icon">
-                                search
+                        <div class="flexi-grid-d-flex">
+                          @if(this.state().sort.field === column.field()){
+                            @if(state().sort.dir === "asc"){
+                              <span class="material-symbols-outlined">
+                                arrow_upward_alt
+                              </span>
+                            }@else{
+                              <span class="material-symbols-outlined">
+                                arrow_downward_alt
                               </span>
                             }
-                          </div>
-                          @if(column.showSecondDate() || (column.filterType() === "date" && column.filterValueSignal())){
-                            <input [type]="setDropdownInputType(column)" [ngClass]="setDropdownInputClass(column)" [(ngModel)]="column.filterValue2Signal" name="filexi-filter-input-{{column.timeStamp()}}" (input)="filterDateRange(column)">
                           }
-                          <flexi-button btnWidth="100%" [btnText]="clearBtnText()" btnColor="dark" (click)="clearFilter(column.field())" [btnDisabled]="!column.filterValueSignal()"/>
                         </div>
                       </div>
-                    </div>
-                  }
-                </div>
-              </th>
+                    }@else {
+                      <div>
+                        <span>{{column.title() ? column.title() : column.field()}}</span>
+                      </div>
+                    } @if(filterable() && column.filterable()){
+                      <div class="flexi-grid-p-relative flexi-grid-d-flex flexi-grid-no-flex-wrap" [ngClass]="!(column.field() && haveFilterValue(column.filterType())) ? 'flexi-grid-disabled' : ''">
+                        <div class="flexi-grid-p-relative">
+                          <span class="material-symbols-outlined flexi-grid-cursor flexi-grid-filter" [ngClass]="{'flexi-grid-filter-filled': column.filterValueSignal()}" (click)="toggleFilterDropdown(columnIndex, column.timeStamp())">
+                            filter_list
+                          </span>
+                          @if(column.filterValueSignal()){
+                            <span class="material-symbols-outlined" style="position: absolute; font-size: 10px; top: 3px; right: 1px;">
+                              asterisk
+                            </span>
+                          }
+                        </div>
+                        <div class="flexi-grid-dropdown-menu flexi-grid-filter-dropdown" id="flexi-grid-filter-dropdown-{{columnIndex}}-{{column.timeStamp()}}" [ngClass]="
+                            column.textAlign() === 'right'
+                              ? 'flexi-grid-dropdown-menu-right'
+                              : ''
+                          ">
+                          <div class="flexi-grid-filter-dropdown-content">
+                            <select class="flexi-grid-filter-dropdown-select" name="flexi-filter-select-{{column.timeStamp()}}" [(ngModel)]="column.filterOperator" (change)="applyFilter(column, column.filterOperator())">
+                              @for(filterType of giveFilterValueByFilterType(column.filterType()); track filterType.operator){
+                                <option [value]="filterType.operator">{{ filterType.value }}</option>
+                              }
+                            </select>
+                            <div class="flexi-grid-p-relative">
+                              <input [type]="setDropdownInputType(column)" [ngClass]="setDropdownInputClass(column)" [(ngModel)]="column.filterValueSignal" name="filexi-filter-input-{{column.timeStamp()}}" (input)="
+                              filter(
+                                column.field(),
+                                column.filterOperator(),
+                                column.filterValueSignal(),
+                                column.filterType(),
+                                column.filterValue2Signal()
+                              )
+                            ">
+                              @if(column.filterType() === "text" || column.filterType() === "number"){
+                                <span class="material-symbols-outlined flexi-grid-filter-dropdown-input-search-icon">
+                                  search
+                                </span>
+                              }
+                            </div>
+                            @if(column.showSecondDate() || (column.filterType() === "date" && column.filterValueSignal())){
+                              <input [type]="setDropdownInputType(column)" [ngClass]="setDropdownInputClass(column)" [(ngModel)]="column.filterValue2Signal" name="filexi-filter-input-{{column.timeStamp()}}" (input)="filterDateRange(column)">
+                            }
+                            <flexi-button btnWidth="100%" [btnText]="clearBtnText()" btnColor="dark" (click)="clearFilter(column.field())" [btnDisabled]="!column.filterValueSignal()"/>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </th>
               } @if(columnCommandTemplate()){
                 <th [ngStyle]="{
                     width: commandColumnWidth(),
@@ -347,8 +347,8 @@
                 @if(showIndex()){
                   {{resetGlobalRowIndex()}}
                 }
-                @for(item of groupedDataSignal(); track item){
-                  <ng-container *ngTemplateOutlet="treeRow; context: { $implicit: item, level: 0 }"></ng-container>
+                @for(item of groupedDataSignal(); track item; let groupIndex = $index){
+                  <ng-container *ngTemplateOutlet="treeRow; context: { $implicit: item, level: 0, index: groupIndex }"></ng-container>
                 }
               }@else {
                 @if(!loading()){
@@ -408,61 +408,58 @@
                     }
 
                     @for(column of getColumns(); track trackByFn()){
-                    <td [ngStyle]="{
-                          width: column.widthSignal(),
-                          'text-align': column.textAlign()
-                        }"
-                        (click)="toggleRowSelection(item[selectableField()])"
-                        [hidden]="!column.visibleSignal()"
-                        [ngClass]="tdTemplateClassName(column)"
-                        [attr.data-label]="column.title() ? column.title() : column.field()" [title]="
-                          item && !column.cellTemplate()
-                            ? getFieldValue(item, column.field())
-                            : ''
-                        "
-                        scope="cell">
-                        @if(column.cellTemplate()){
-                        <ng-container *ngTemplateOutlet="
-                              column.cellTemplate();
-                              context: { $implicit: item, column: column, rowIndex: i }
-                            " />
-                        }@else{
-                          @if(column.field()){
-                            @if((column.filterType() === "date" || column.filterType() === "date-time") && column.filterType()){
-                            {{ getFieldValue(item, column.field()) | date : column.format()! }}
-                            }@else if(column.filterType() === "number" && column.filterType()){
-                              @if(column.format() === "n" || column.format() === null){
-                              {{ getFieldValue(item, column.field()) | trCurrency : "" : true : column.fraction() }}
+                      <td [ngStyle]="{
+                            width: column.widthSignal(),
+                            'text-align': column.textAlign()
+                          }"
+                          (click)="toggleRowSelection(item[selectableField()])"
+                          [hidden]="!column.visibleSignal()"
+                          [ngClass]="tdTemplateClassName(column)"
+                          [attr.data-label]="column.title() ? column.title() : column.field()" [title]="
+                            item && !column.cellTemplate()
+                              ? getFieldValue(item, column.field())
+                              : ''
+                          "
+                          scope="cell">
+                          @if(column.cellTemplate()){
+                            <ng-container *ngTemplateOutlet="column.cellTemplate(); context: { $implicit: item, column: column, rowIndex: i }" />
+                          }@else{
+                            @if(column.field()){
+                              @if((column.filterType() === "date" || column.filterType() === "date-time") && column.filterType()){
+                                {{ getFieldValue(item, column.field()) | date : column.format()! }}
+                              }@else if(column.filterType() === "number" && column.filterType()){
+                                @if(column.format() === "n" || column.format() === null){
+                                  {{ getFieldValue(item, column.field()) | trCurrency : "" : true : column.fraction() }}
                                 }@else if(column.format() === "c"){
-                              {{
-                              getFieldValue(item, column.field())
-                              | trCurrency
-                              : column.symbol()
-                              : column.showSymbolInFront()
-                              : column.fraction()
-                              }}
-                              }
-                            }@else if(column.filterType() === "boolean"){
-                              @if(column.showCheckbox()){
-                              <input class="flexi-grid-checkbox" type="checkbox" [checked]="getFieldValue(item, column.field())"
-                                (change)="getBooleanInputValue(item, column, $event)" />
+                                  {{
+                                  getFieldValue(item, column.field())
+                                  | trCurrency
+                                  : column.symbol()
+                                  : column.showSymbolInFront()
+                                  : column.fraction()
+                                  }}
+                                }
+                              }@else if(column.filterType() === "boolean"){
+                                @if(column.showCheckbox()){
+                                  <input class="flexi-grid-checkbox" type="checkbox" [checked]="getFieldValue(item, column.field())"
+                                        (change)="getBooleanInputValue(item, column, $event)" />
+                                }@else {
+                                  @if(getFieldValue(item, column.field())){
+                                  <span class="flexi-grid-card flexi-grid-card-success">
+                                    {{ column.booleanData()[0] }}
+                                  </span>
+                                  }@else {
+                                  <span class="flexi-grid-card flexi-grid-card-danger">
+                                    {{ column.booleanData()[1] }}
+                                  </span>
+                                  }
+                                }
                               }@else {
-                              @if(getFieldValue(item, column.field())){
-                              <span class="flexi-grid-card flexi-grid-card-success">
-                                {{ column.booleanData()[0] }}
-                              </span>
-                              }@else {
-                              <span class="flexi-grid-card flexi-grid-card-danger">
-                                {{ column.booleanData()[1] }}
-                              </span>
+                                {{ getFieldValue(item, column.field()) }}
                               }
                             }
-                          }@else {
-                            {{ getFieldValue(item, column.field()) }}
                           }
-                        }
-                      }
-                    </td>
+                      </td>
                     }
                     @if(columnCommandTemplate()){
                     <td [ngStyle]="{
@@ -626,7 +623,7 @@
 </div>
 }
 
-<ng-template #treeRow let-node let-level="level">
+<ng-template #treeRow let-node let-level="level" let-index="index">
   <tr [ngClass]="{'flexi-grid-selected-row': selectedRows().has(level)}"
       [ngStyle]="{ 'min-height': trMinHeight() }" role="row">
     @if(selectable()){
@@ -689,9 +686,42 @@
           }
 
           @if(column.cellTemplate()){
-            <ng-container *ngTemplateOutlet="column.cellTemplate(); context: { $implicit: node, column: column }" />
+            <ng-container *ngTemplateOutlet="column.cellTemplate(); context: { $implicit: node, column: column, rowIndex: index }" />
           }@else{
-            {{ getFieldValue(node, column.field()) }}
+            @if(column.field()){
+              @if((column.filterType() === "date" || column.filterType() === "date-time") && column.filterType()){
+                {{ getFieldValue(node, column.field()) | date : column.format()! }}
+              }@else if(column.filterType() === "number" && column.filterType()){
+                @if(column.format() === "n" || column.format() === null){
+                  {{ getFieldValue(node, column.field()) | trCurrency : "" : true : column.fraction() }}
+                }@else if(column.format() === "c"){
+                  {{
+                  getFieldValue(node, column.field())
+                  | trCurrency
+                  : column.symbol()
+                  : column.showSymbolInFront()
+                  : column.fraction()
+                  }}
+                }
+              }@else if(column.filterType() === "boolean"){
+                @if(column.showCheckbox()){
+                  <input class="flexi-grid-checkbox" type="checkbox" [checked]="getFieldValue(node, column.field())"
+                    (change)="getBooleanInputValue(node, column, $event)" />
+                }@else {
+                  @if(getFieldValue(node, column.field())){
+                    <span class="flexi-grid-card flexi-grid-card-success">
+                      {{ column.booleanData()[0] }}
+                    </span>
+                  }@else {
+                    <span class="flexi-grid-card flexi-grid-card-danger">
+                      {{ column.booleanData()[1] }}
+                    </span>
+                  }
+                }
+              }@else {
+                {{ getFieldValue(node, column.field()) }}
+              }
+            }
           }
       </td>
     }
@@ -713,8 +743,8 @@
 
   @if(node.children && node.children.length > 0){
     @if(isNodeExpanded(node[groupableField()])){
-      @for(child of node.children; track child){
-        <ng-container *ngTemplateOutlet="treeRow; context: { $implicit: child, level: level + 1 }"></ng-container>
+      @for(child of node.children; track child; let childIndex = $index){
+        <ng-container *ngTemplateOutlet="treeRow; context: { $implicit: child, level: level + 1, index: childIndex }"></ng-container>
       }
     }
   }
