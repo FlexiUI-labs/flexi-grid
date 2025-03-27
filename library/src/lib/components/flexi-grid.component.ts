@@ -518,7 +518,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
           if (filter.type !== "boolean" && filter.type !== "select" && filter.type !== "number") {
             itemValue = itemValue ? itemValue.toString().toLocaleLowerCase('tr') : '';
             filterValue = value ? value.toString().toLocaleLowerCase('tr') : '';
-          } else if (filter.type === "boolean" || filter.type === "select") {
+          } else if (filter.type === "boolean") {
             filterValue = value == "true" ? true : false;
           } else if (filter.type === "number") {
             filterValue = +value.toString().replace(",", ".");
@@ -609,6 +609,11 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
       } else {
         this.pagedData.set(filteredData);
       }
+    }
+
+    if (filteredData.length === 0) {
+      this.prevData.set([]);
+      this.prevTotal.set(0);
     }
   }
 

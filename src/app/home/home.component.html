@@ -1,58 +1,38 @@
 <flexi-grid
-[data]="data()"
-[loading]="loading()"
-[showFilterPanel]="true"
-themeClass="light"
-[showCaption]="true"
-captionTitle="User List"
-[groupable]="true"
-groupableField="code"
-[showIndex]="true"
-[reorderable]="false"
-[selectable]="false"
-height="200px"
-[useMinHeight]="true"
-[autoHeight]="true"
-(onRefresh)="result.reload()">
-    <flexi-grid-column field="code" title="Code">
-        <ng-template flexiGridFooterTemplate>
-            <span>Total</span>
-        </ng-template>
-    </flexi-grid-column>
-    <flexi-grid-column field="type" title="Type" />
-    <flexi-grid-column field="name" title="Name" />
+    [data]="data()"
+    [loading]="loading()"
+    language="tr"
+    [showCaption]="true"
+    captionTitle="Gelen e-Fatura Listesi"
+    exportExcelFileName="Gelen e-Fatura Listesi"
+    [showExportExcelBtn]="true"
+    (onRefresh)="result.reload()"
+    >
+        <flexi-grid-column field="accountName" title="Firma Adı" />
+        <flexi-grid-column field="profile" title="Belge" filterType="select" [filterData]="faturaProfileFilterData()" />
+        <flexi-grid-column field="createDate" title="Oluş. Tarihi" filterType="date" format="dd MMM yyyy" />
+        <flexi-grid-column field="docDate" title="Bel. Tarihi" filterType="date" format="dd MMM yyyy" />
+        <flexi-grid-column field="docNo" title="Bel. Numarası" />
+        <flexi-grid-column field="ettn" title="ETTN" />
+        <flexi-grid-column field="invoiceStatusText" title="Fatura Durumu" filterType="select" [filterData]="faturaDurumFilterData()" textAlign="center">
+            <ng-template flexiGridCellTemplate let-item>
+                @if(item.invoiceStatusText === "KABUL"){
+                    <span class="flexi-grid-card flexi-grid-card-success">{{item.invoiceStatusText}}</span>
+                }
 
-    <ng-template flexiGridColumnCommandTemplate let-item>
-        <flexi-button btnSize="small" btnColor="primary" btnIcon="zoom_in" title="Detail" flexiTooltip />
-        <flexi-button btnSize="small" btnColor="info" btnIcon="edit" title="Edit" flexiTooltip />
-        <flexi-button btnSize="small" btnColor="pink" btnIcon="delete" title="Remove" flexiTooltip />
-    </ng-template>
-</flexi-grid>
-<div style="margin-bottom: 20px;"></div>
-<flexi-grid
-[data]="data()"
-[loading]="loading()"
-[showFilterPanel]="true"
-themeClass="light"
-[showCaption]="true"
-captionTitle="User List"
-[groupable]="false"
-groupableField="code"
-[showIndex]="true"
-[reorderable]="true"
-[selectable]="true"
-(onRefresh)="result.reload()">
-    <flexi-grid-column field="code" title="Code">
-        <ng-template flexiGridFooterTemplate>
-            <span>Total</span>
-        </ng-template>
-    </flexi-grid-column>
-    <flexi-grid-column field="type" title="Type" />
-    <flexi-grid-column field="name" title="Name" />
-
-    <ng-template flexiGridColumnCommandTemplate let-item>
-        <flexi-button btnSize="small" btnColor="primary" btnIcon="zoom_in" title="Detail" flexiTooltip />
-        <flexi-button btnSize="small" btnColor="info" btnIcon="edit" title="Edit" flexiTooltip />
-        <flexi-button btnSize="small" btnColor="pink" btnIcon="delete" title="Remove" flexiTooltip />
-    </ng-template>
-</flexi-grid>
+                @if(item.invoiceStatusText === "RED"){
+                    <span class="flexi-grid-card flexi-grid-card-danger">{{item.invoiceStatusText}}</span>
+                }
+            </ng-template>
+        </flexi-grid-column>
+        <flexi-grid-column field="invoiceType" title="Fatura Tipi" filterType="select" [filterData]="faturaTipiFilterData()" textAlign="center">
+            <ng-template flexiGridCellTemplate let-item>
+                <span class="flexi-grid-card" [ngClass]="getFaturaTipClass(item)">
+                    {{ item.invoiceType }}
+                </span>
+            </ng-template>
+        </flexi-grid-column>
+        <flexi-grid-column field="payableAmount" title="Ödenecek Tutar" filterType="number" format="c" textAlign="right" />
+        <flexi-grid-column field="taxExclusiveAmount" title="KDV Hariç Tutar" filterType="number" format="c" textAlign="right" />
+        <flexi-grid-column field="taxInclusiveAmount" title="KDV Dahil Tutar" filterType="number" format="c" textAlign="right" />
+    </flexi-grid>

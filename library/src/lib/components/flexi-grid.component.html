@@ -284,10 +284,10 @@
                             column.filterType()
                           )
                         ">
-                        <option [value]="undefined">{{selectAnOption()}}</option>
-                        @for(data of column.filterData();track data.value){
-                        <option [value]="data.value">{{ data.name }}</option>
-                        }
+                          <option [value]="undefined">{{selectAnOption()}}</option>
+                          @for(data of column.filterData();track data.value){
+                            <option [value]="data.value">{{ data.name }}</option>
+                          }
                       </select>
                     }@else if(column.filterType() === "boolean" &&
                     column.booleanData().length > 0){
