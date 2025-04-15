@@ -614,8 +614,8 @@
     }
     <div class="flexi-grid-pagination-part-third">
       <span>
-        <b>{{ state().pageNumber }}</b> - <b>{{ totalPageCount() }}</b> of
-        <b>{{ (totalSignal() | currency : "" : "" : "1.0")!.replace(",", ".") }}</b> items
+        <b>{{ state().pageNumber }}</b> - <b>{{ totalPageCount() }}</b> {{ ofText() }}
+        <b>{{ (totalSignal() | currency : "" : "" : "1.0")!.replace(",", ".") }}</b> {{ itemsText() }}
       </span>
     </div>
   </div>

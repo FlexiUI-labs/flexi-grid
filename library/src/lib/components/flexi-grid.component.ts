@@ -236,6 +236,22 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
       default: return "";
     }
   });
+  readonly ofText = computed(() => {
+    switch (this.language()) {
+      case "en": return "of";
+      case "tr": return "toplam";
+      case "bg": return "от";
+      default: return "";
+    }
+  });
+  readonly itemsText = computed(() => {
+    switch (this.language()) {
+      case "en": return "items";
+      case "tr": return "kayıt";
+      case "bg": return "записи";
+      default: return "";
+    }
+  });
 
   readonly columns = contentChildren(FlexiGridColumnComponent, { descendants: true });
 
