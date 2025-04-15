@@ -96,7 +96,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     return this.total();
   });
   readonly dataSignal = linkedSignal(() => this.data());
-  readonly commandColumnTitleSignal = linkedSignal(() => this.commandColumnTitle() ? this.commandColumnTitle() : (this.language() === "tr" ? "İşlemler" : "Operations"));
+  readonly commandColumnTitleSignal = linkedSignal(() => this.commandColumnTitle() ? this.commandColumnTitle() : (this.language() === "tr" ? "İşlemler" :  (this.language() === "en" ? "Operations" : "Операции")));
   readonly groupedDataSignal = computed(() => {
     if (this.groupable() && this.groupableField() && this.pagedData()) {
       const grouped = this.buildTree(this.pagedData(), this.groupableField());
