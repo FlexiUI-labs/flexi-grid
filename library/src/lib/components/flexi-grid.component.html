@@ -426,7 +426,7 @@
                           }@else{
                             @if(column.field()){
                               @if((column.filterType() === "date" || column.filterType() === "date-time") && column.filterType()){
-                                {{ getFieldValue(item, column.field()) | date : column.format()! }}
+                                {{ getFieldValue(item, column.field()) | date : column.format()!:'':language() }}
                               }@else if(column.filterType() === "number" && column.filterType()){
                                 @if(column.format() === "n" || column.format() === null){
                                   {{ getFieldValue(item, column.field()) | trCurrency : "" : true : column.fraction() }}
@@ -690,7 +690,7 @@
           }@else{
             @if(column.field()){
               @if((column.filterType() === "date" || column.filterType() === "date-time") && column.filterType()){
-                {{ getFieldValue(node, column.field()) | date : column.format()! }}
+                {{ getFieldValue(node, column.field()) | date : column.format()!:'':language() }}
               }@else if(column.filterType() === "number" && column.filterType()){
                 @if(column.format() === "n" || column.format() === null){
                   {{ getFieldValue(node, column.field()) | trCurrency : "" : true : column.fraction() }}
