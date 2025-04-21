@@ -135,11 +135,7 @@
                             </span>
                           }
                         </div>
-                        <div class="flexi-grid-dropdown-menu flexi-grid-filter-dropdown" id="flexi-grid-filter-dropdown-{{columnIndex}}-{{column.timeStamp()}}" [ngClass]="
-                            column.textAlign() === 'right'
-                              ? 'flexi-grid-dropdown-menu-right'
-                              : ''
-                          ">
+                        <div class="flexi-grid-dropdown-menu flexi-grid-filter-dropdown" id="flexi-grid-filter-dropdown-{{columnIndex}}-{{column.timeStamp()}}">
                           <div class="flexi-grid-filter-dropdown-content">
                             <select class="flexi-grid-filter-dropdown-select" name="flexi-filter-select-{{column.timeStamp()}}" [(ngModel)]="column.filterOperator" (change)="applyFilter(column, column.filterOperator())">
                               @for(filterType of giveFilterValueByFilterType(column.filterType()); track filterType.operator){

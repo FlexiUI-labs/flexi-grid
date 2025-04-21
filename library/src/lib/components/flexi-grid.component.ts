@@ -816,11 +816,38 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   toggleFilterDropdown(index: number, stamp: number) {
     const el = document.getElementById(`flexi-grid-filter-dropdown-${index}-${stamp}`);
     if (!el) return;
-
+  
     const isCurrentlyOpen = el.classList.contains("show");
     this.closeAllFilterDropdown();
+    
     if (!isCurrentlyOpen) {
+      // First show the dropdown to calculate its dimensions
       el.classList.add("show");
+      
+      // Calculate available space
+      const dropdownRect = el.getBoundingClientRect();
+      const windowWidth = window.innerWidth;
+      const spaceOnRight = windowWidth - dropdownRect.right;
+      const spaceOnLeft = dropdownRect.left;
+      
+      // Clear both position classes first
+      el.classList.remove("flexi-grid-dropdown-menu-right");
+      el.classList.remove("flexi-grid-dropdown-menu-left");
+      
+      // Decide which side has more space and apply appropriate class
+      if (spaceOnRight < 50 && spaceOnLeft > dropdownRect.width) {
+        // Not enough space on right, but enough on left
+        el.classList.add("flexi-grid-dropdown-menu-left");
+      } else if (spaceOnLeft < 50 && spaceOnRight > dropdownRect.width) {
+        // Not enough space on left, but enough on right
+        el.classList.add("flexi-grid-dropdown-menu-right");
+      } else if (spaceOnRight < spaceOnLeft) {
+        // More space on left than right
+        el.classList.add("flexi-grid-dropdown-menu-left");
+      } else {
+        // Default or more space on right than left
+        el.classList.add("flexi-grid-dropdown-menu-right");
+      }
     }
   }
 

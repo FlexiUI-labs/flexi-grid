@@ -3,8 +3,9 @@
     position: absolute;
     top: 100%;
     z-index: 3;
-    right: 0;
-    float: left;
+    /* Default position (centered) */
+    left: 50%;
+    transform: translateX(-50%);
     min-width: 180px;
     padding: 5px 0;
     margin: 0;
@@ -21,6 +22,15 @@
 
 .flexi-grid-dropdown-menu-right {
     right: -150px;
+    left: auto;
+    transform: none;
+}
+
+/* Position the dropdown to the left */
+.flexi-grid-dropdown-menu-left {
+    left: -150px;
+    right: auto;
+    transform: none;
 }
 
 .flexi-grid-dropdown-menu.show {
