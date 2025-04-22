@@ -1,6 +1,6 @@
 {
   "name": "flexi-grid",
-  "version": "19.0.66",
+  "version": "19.0.67",
   "description": "A lightweight, customizable Angular data grid component with filtering, sorting, and pagination features.",
   "author": "Taner Saydam <tanersaydam@gmail.com>",
   "license": "MIT",

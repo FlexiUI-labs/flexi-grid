@@ -29,7 +29,7 @@ import { FlexiGridCaptionCommandTemplateDirective } from '../directives/flexi-gr
     TrCurrencyPipe,
     FlexiTooltipDirective,
     FlexiButtonComponent,
-    DragDropModule
+    DragDropModule,
     ],
   exports: [
     FlexiGridComponent,

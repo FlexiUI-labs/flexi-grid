@@ -2,8 +2,10 @@ import { Component, computed, inject, resource, signal } from '@angular/core';
 import { FlexiGridModule } from '../../../library/src/lib/modules/flexi-grid.module';
 import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
-import { FlexiGridFilterDataModel } from '../../../library/src/lib/models/flexi-grid-filter-data.model';
 import { CommonModule } from '@angular/common';
+import { FlexiGridService } from '../../../library/src/lib/services/flexi-grid.service';
+import { StateModel } from '../../../library/src/lib/models/state.model';
+
 
 @Component({
   selector: 'app-home',
@@ -12,89 +14,33 @@ import { CommonModule } from '@angular/common';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  readonly state = signal<StateModel>(new StateModel());
   readonly result = resource({
+    request: this.state,
     loader: async() => {
-      const res = await lastValueFrom(this.#http.get<any>("/efatura.json"));
-      await new Promise((res)=> setTimeout(res, 2000));
+      const token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImMxZWYyYzA1LTliNmMtNDAxYi1iNzVmLTRkMTkzNzEwYmFkMyIsImZ1bGxOYW1lIjoiU3lzdGVtIEFkbWluIiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJuYmYiOjE3NDUyNzY2NTMsImV4cCI6MTc0NTM2MzA1MywiaXNzIjoiUHVibGljIFdhc3RlIE1hbmFnZW1lbnQgU3lzdGVtIiwiYXVkIjoiUHVibGljIFdhc3RlIE1hbmFnZW1lbnQgU3lzdGVtIn0.sbpZcwtrmeQQImGbJzl6ZyaCU260EnDSA5LUfcsaXuZWQyXXOo0kmc1l7oilcg92VgQ4bH5ZVzJbTm4Hl2c0PQ"
+      let endpoint = "https://pwms.webapi.ecnorow.com/odata/zones?$count=true&&top=45";
+      // const odataEndpoint = this.#grid.getODataEndpoint(this.state());
+      // endpoint += odataEndpoint;
+      const res = await lastValueFrom<any>(this.#http.get<any>(endpoint, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      }));
+
+     await new Promise((resolve) => setTimeout(resolve, 2000));
       return res;
     }
   });
 
-  readonly data = computed(() => this.result.value().data ?? []);
+  readonly data = computed(() => this.result.value()?.value ?? []);
+  readonly total = computed(() => this.result.value()?.["@odata.count"] ?? 0);
   readonly loading = computed(() => this.result.isLoading());
-  readonly faturaDurumFilterData = signal<FlexiGridFilterDataModel[]>([
-    {
-      name: "KABUL",
-      value: "KABUL"
-    },
-    {
-      name: "RED",
-      value: "RED"
-    },
-  ]);
-  readonly faturaTipiFilterData = signal<FlexiGridFilterDataModel[]>([
-    {
-      name: "OLMAYAN",
-      value: "OLMAYAN"
-    },
-    {
-      name: "BOS",
-      value: "BOS"
-    },
-    {
-      name: "IADE",
-      value: "IADE"
-    },
-    {
-      name: "IHRACKAYITLI",
-      value: "IHRACKAYITLI"
-    },
-    {
-      name: "ISTISNA",
-      value: "ISTISNA"
-    },
-    {
-      name: "KOMISYONCU",
-      value: "KOMISYONCU"
-    },
-    {
-      name: "OZELMATRAH",
-      value: "OZELMATRAH"
-    },
-    {
-      name: "SATIS",
-      value: "SATIS"
-    },
-    {
-      name: "TEVKIFAT",
-      value: "TEVKIFAT"
-    },
-  ]);
-  readonly faturaProfileFilterData = signal<FlexiGridFilterDataModel[]>([
-    {
-      name: "TICARIFATURA",
-      value: "TICARIFATURA"
-    },
-    {
-      name: "TEMELFATURA",
-      value: "TEMELFATURA"
-    },
-  ]);
 
   readonly #http = inject(HttpClient);
+  readonly #grid = inject(FlexiGridService);
 
-  getFaturaTipClass(item:any){
-    var type = item.invoiceType;
-    switch (type) {
-      case "BOS": return "flexi-grid-card-light"
-      case "IADE": return "flexi-grid-card-danger"
-      case "IHRACKAYITLI": return "flexi-grid-card-info"
-      case "ISTISNA": return "flexi-grid-card-secondary"
-      case "KOMISYONCU": return "flexi-grid-card-dark"
-      case "OZELMATRAH": return "flexi-grid-card-warning"
-      case "SATIS": return "flexi-grid-card-primary"
-      case "TEVKIFAT": return "flexi-grid-card-info"
-      default: return ""
-    }
+  changeOData(state:StateModel) {
+   //this.state.set(state);
   }
 }

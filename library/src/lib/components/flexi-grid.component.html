@@ -422,7 +422,11 @@
                           }@else{
                             @if(column.field()){
                               @if((column.filterType() === "date" || column.filterType() === "date-time") && column.filterType()){
-                                {{ getFieldValue(item, column.field()) | date : column.format()!:'':language() }}
+                                @if(language() === "bg"){
+                                  {{ getFieldValue(item, column.field()) | date : column.format()!:'':language() }}
+                                }@else {
+                                  {{ getFieldValue(item, column.field()) | date : column.format()!}}
+                                }
                               }@else if(column.filterType() === "number" && column.filterType()){
                                 @if(column.format() === "n" || column.format() === null){
                                   {{ getFieldValue(item, column.field()) | trCurrency : "" : true : column.fraction() }}
