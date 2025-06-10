@@ -1,6 +1,6 @@
 # Flexi Grid
 
-Flexi Grid is an advanced, lightweight, and customizable Angular 19 data grid component. It provides powerful features such as filtering, sorting, resizing, data binding, multi-language support, and both light and dark themes.
+Flexi Grid is an advanced, lightweight, and customizable Angular 20 data grid component. It provides powerful features such as filtering, sorting, resizing, data binding, multi-language support, and both light and dark themes.
 
 This library is designed to be flexible and easy to integrate into any Angular application, offering a seamless user experience with responsive and interactive data tables.
 
