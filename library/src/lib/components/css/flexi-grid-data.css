@@ -22,6 +22,10 @@
     --flexi-grid-selected-bg-color: #e9f1f8;
     --flexi-grid-selected-text-color: #000;
     --flexi-hover-background-color: #dfe2e6;
+    --flexi-grid-card-warning: 255, 193, 7;
+    --flexi-grid-card-purple: 156, 39, 176;
+    --flexi-grid-card-primary: 13, 110, 253;
+    --flexi-grid-card-info: 13, 202, 240;
   }
 
   [data-bs-theme="dark"] {
@@ -44,4 +48,8 @@
     --flexi-grid-selected-bg-color: #353232;
     --flexi-grid-selected-text-color: #fff;
     --flexi-hover-background-color: #353232;
+    --flexi-grid-card-warning: 255, 193, 7;
+    --flexi-grid-card-purple: 156, 39, 176;
+    --flexi-grid-card-primary: 13, 110, 253;
+    --flexi-grid-card-info: 13, 202, 240;
   }

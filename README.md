@@ -101,6 +101,8 @@ This will render a data grid with columns for ID, Name, Email, and Salary, along
 | `language`           | `"tr"` \| `"en"`         | `"tr"`    | Sets the language for UI elements. |
 | `reorderable`        | `boolean`                | `false`   | Enables row reordering via drag-and-drop. |
 | `selectable`         | `boolean`                | `false`   | Enables row selection. |
+| `sort`               | `StateSortModel` \| `undefined` | `undefined` | Sets the initial sort configuration. When provided, the grid will apply this sorting on initialization. The object should contain `field` (column field name) and `dir` (sort direction: 'asc' or 'desc'). Example: `{field: 'name', dir: 'asc'}`. |
+| `filter`             | `StateFilterModel[]`     | `[]`      | Sets the initial filter configuration. When provided, the grid will apply these filters on initialization. Each filter object should contain `field` (column field name), `value` (filter value), `operator` (filter operator like 'eq', 'contains', etc.), and `type` (filter type like 'text', 'number', 'date'). Example: `[{field: 'name', value: 'John', operator: 'contains', type: 'text'}]`. |
 
 ---
 
@@ -191,6 +193,63 @@ Use `flexiGridColumnCommandTemplate` to define a custom command column template:
 </flexi-grid>
 ```
 
+
+### Initial Sort Configuration
+
+You can set an initial sort configuration to have the grid display data in a specific order when it loads:
+
+```html
+<flexi-grid 
+  [data]="data" 
+  [sort]="{field: 'name', dir: 'asc'}">
+  
+  <flexi-grid-column field="id" title="ID" width="70px" />
+  <flexi-grid-column field="name" title="Name" />
+  <flexi-grid-column field="email" title="Email" />
+  <flexi-grid-column field="salary" title="Salary" filterType="number" />
+</flexi-grid>
+```
+
+### Initial Filter Configuration
+You can set initial filters to have the grid display filtered data when it loads:
+
+```html
+<flexi-grid
+  [data]="data"
+  [filter]="initialFilters">
+
+  <flexi-grid-column field="id" title="ID" width="70px" />
+  <flexi-grid-column field="name" title="Name" />
+  <flexi-grid-column field="email" title="Email" />
+  <flexi-grid-column field="salary" title="Salary" filterType="number" />
+  <flexi-grid-column field="department" title="Department" />
+</flexi-grid>
+```
+
+```ts
+export class ExampleComponent {
+  data = [
+    { id: 1, name: 'John Doe', email: 'john@example.com', salary: 5000, department: 'IT' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', salary: 6000, department: 'HR' },
+    { id: 3, name: 'Alice Brown', email: 'alice@example.com', salary: 7000, department: 'IT' }
+  ];
+
+  initialFilters: StateFilterModel[] = [
+    {
+      field: 'department',
+      value: 'IT',
+      operator: 'eq',
+      type: 'text'
+    },
+    {
+      field: 'salary',
+      value: '5000',
+      operator: 'gt',
+      type: 'number'
+    }
+  ];
+}
+```
 ## Contributing
 
 We welcome contributions to improve **Flexi Grid**! If you would like to contribute, please follow these steps:

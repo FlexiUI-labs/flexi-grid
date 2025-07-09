@@ -653,6 +653,30 @@ flexi-button {
   color: var(--flexi-grid-text-color);
 }
 
+.flexi-grid-card-warning {
+  background-color: rgba(var(--flexi-grid-card-warning), 0.1);
+  border-color: rgb(var(--flexi-grid-card-warning));
+  color: var(--flexi-grid-text-color);
+}
+
+.flexi-grid-card-purple {
+  background-color: rgba(var(--flexi-grid-card-purple), 0.1);
+  border-color: rgb(var(--flexi-grid-card-purple));
+  color: var(--flexi-grid-text-color);
+}
+
+.flexi-grid-card-primary {
+  background-color: rgba(var(--flexi-grid-card-primary), 0.1);
+  border-color: rgb(var(--flexi-grid-card-primary));
+  color: var(--flexi-grid-text-color);
+}
+
+.flexi-grid-card-info {
+  background-color: rgba(var(--flexi-grid-card-info), 0.1);
+  border-color: rgb(var(--flexi-grid-card-info));
+  color: var(--flexi-grid-text-color);
+}
+
 .flexi-grid-foot {
   background-color: var(--flexi-grid-bg-color);
 }

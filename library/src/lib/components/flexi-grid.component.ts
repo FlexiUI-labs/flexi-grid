@@ -1,6 +1,6 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, TemplateRef, ViewEncapsulation, inject, signal, output, input, contentChildren, viewChild, linkedSignal, computed, contentChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, TemplateRef, ViewEncapsulation, inject, signal, output, input, contentChildren, viewChild, linkedSignal, computed, contentChild, OnInit } from '@angular/core';
 import { FilterType, FlexiGridColumnComponent, TextAlignType } from './flexi-grid-column.component';
-import { StateFilterModel, StateModel, StateOrderModel } from '../models/state.model';
+import { FilterOperator, initialStateFilterModel, StateFilterModel, StateModel, StateSortModel } from '../models/state.model';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver-es';
 import { HttpClient } from '@angular/common/http';
@@ -27,7 +27,7 @@ import { StatusChangeEvent } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
-export class FlexiGridComponent implements OnChanges, AfterViewInit {
+export class FlexiGridComponent implements OnChanges, AfterViewInit, OnInit {
   readonly data = input.required<any[]>();
   readonly total = input<number | null>(0);
   readonly pageable = input<boolean>(true);
@@ -80,7 +80,8 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   readonly showFilterPanel = input<boolean>(true);
   readonly groupable = input<boolean>(false);
   readonly groupableField = input<string>('');
-  readonly sort = input<StateOrderModel | undefined>(undefined);
+  readonly sort = input<StateSortModel | undefined>(undefined);
+  readonly filter = input<StateFilterModel[]>([]);
 
   readonly columnsArray = signal<FlexiGridColumnComponent[]>([]);
   readonly selectedRows = signal<Set<any>>(new Set());
@@ -139,9 +140,9 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   readonly state = signal<StateModel>(new StateModel());
   readonly pagedData = signal<any[]>([]);
   timeoutId: any;
-  readonly textFilterTypes = signal<{ operator: string, value: string }[]>([]);
-  readonly numberFilterTypes = signal<{ operator: string, value: string }[]>([]);
-  readonly dateFilterTypes = signal<{ operator: string, value: string }[]>([]);
+  readonly textFilterTypes = signal<{ operator: FilterOperator, value: string }[]>([]);
+  readonly numberFilterTypes = signal<{ operator: FilterOperator, value: string }[]>([]);
+  readonly dateFilterTypes = signal<{ operator: FilterOperator, value: string }[]>([]);
   readonly _pageSize = signal<number>(10);
   readonly resizingColumn = signal<any>(undefined);
   readonly startX = signal<number | undefined>(undefined);
@@ -294,14 +295,26 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    if(this.sort()){
-      this.state.update(prev => ({...prev, sort: this.sort()!}))
-
+  ngOnInit() {
+    if (this.sort()) {
+      this.state.update(prev => ({ ...prev, sort: this.sort()!, filter: this.filter() }))
       this.dataStateChange.emit(this.state());
-      //this.sortMethod(true,column);
+    } else {
+      this.state.update(prev => ({ ...prev, filter: this.filter() }));
+      this.dataStateChange.emit(this.state());
     }
 
+
+    this.filter().forEach(val => {
+      const column = this.columns().find(i => i.field() === val.field);
+      if (column) {
+        column.filterOperator.set(val.operator);
+        column.filterValueSignal.set(val.value)
+      }
+    })
+  }
+
+  ngAfterViewInit(): void {
     const columns = this.getColumns();
     if (!columns || columns.length === 0) {
       this.initializeColumnsFromData();
@@ -310,11 +323,14 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
 
     columns?.forEach((column: any) => {
       if (column.filterValue() != undefined) {
-        this.filter(column.field(), column.filterOperator(), column.filterValue(), column.filterType());
+        this.filterMethod(column.field(), column.filterOperator(), column.filterValue(), column.filterType());
       }
     });
 
+    this.setupFilterTypes();
+  }
 
+  setupFilterTypes() {
     switch (this.language()) {
       case "tr":
         this.textFilterTypes.set([
@@ -783,7 +799,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     } else if (this.state().sort.dir === 'desc' && oldSortField === sort.field) {
       this.state.update(prev => ({
         ...prev,
-        sort: new StateOrderModel()
+        sort: { field: '', dir: 'asc' }
       }))
     } else {
       this.state.update(prev => ({
@@ -865,7 +881,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     els.forEach(el => el.classList.remove("show"));
   }
 
-  applyFilter(column: FlexiGridColumnComponent, operator: string) {
+  applyFilter(column: FlexiGridColumnComponent, operator: FilterOperator) {
     column.filterOperator.set(operator);
 
     if (operator === "range") {
@@ -879,17 +895,17 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     }
 
     if (column.filterValueSignal() !== "") {
-      this.filter(column.field(), operator, column.filterValueSignal(), column.filterType(), column.filterValue2Signal());
+      this.filterMethod(column.field(), operator, column.filterValueSignal(), column.filterType(), column.filterValue2Signal());
     }
   }
 
   filterDateRange(column: FlexiGridColumnComponent) {
     column.filterOperator.set("range");
     column.showSecondDate.set(true);
-    this.filter(column.field(), column.filterOperator(), column.filterValueSignal(), column.filterType(), column.filterValueSignal());
+    this.filterMethod(column.field(), column.filterOperator(), column.filterValueSignal(), column.filterType(), column.filterValue2Signal());
   }
 
-  filter(field: string, operator: string, value: string, type: FilterType, value2?: string) {
+  filterMethod(field: string, operator: FilterOperator, value: string, type: FilterType, value2?: string) {
     if (value === undefined || value.toString() === 'undefined') value = "";
     if (operator === "range" && !value2) return;
 
@@ -910,7 +926,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
           filterField.value2 = value2 ?? "";
           filterField.operator = operator;
         } else {
-          filterField = new StateFilterModel();
+          filterField = { ...initialStateFilterModel };
           filterField.field = field;
           filterField.operator = operator;
           filterField.value = value;
@@ -951,7 +967,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   }
 
   clearFilter(field: string) {
-    this.filter(field, "contains", "", "text");
+    this.filterMethod(field, "contains", "", "text");
     const column = this.getColumns()?.find((p: any) => p.field() === field);
     if (column) {
       column.filterValueSignal.set("");
@@ -981,15 +997,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
 
     if (!this.dataBinding()) return;
 
-    this.getColumns()?.forEach((val: any) => {
-      const filterType = val.filterType();
-      if (filterType === "boolean" || filterType === "select") {
-        val.filterValue = undefined
-      } else {
-        val.filterValue = "";
-      }
-    });
-    this.dataStateChange.emit(this.state());
+    this.dataStateChange.emit({ ...this.state() });
   }
 
   onMouseDown(event: MouseEvent | any, column: any, width: any) {
@@ -1193,12 +1201,29 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    const data: FlexiGridReorderModel = {
-      previousIndex: event.previousIndex,
-      currentIndex: event.currentIndex
+    const currentData = this.getPagedData();
+
+    const previousIndex = event.previousIndex;
+    const currentIndex = event.currentIndex;
+
+    if (previousIndex < 0 || currentIndex < 0 ||
+      previousIndex >= currentData.length ||
+      currentIndex >= currentData.length) {
+      console.warn('Invalid drag drop indices');
+      return;
     }
 
-    this.onReorder.emit(data);
+    const previousData = currentData[previousIndex];
+    const newPositionData = currentData[currentIndex];
+
+    const reorderData: FlexiGridReorderModel = {
+      previousIndex: previousIndex,
+      currentIndex: currentIndex,
+      previousData: previousData,
+      currentData: newPositionData
+    };
+
+    this.onReorder.emit(reorderData);
   }
 
   toggleRowSelection(item: any) {

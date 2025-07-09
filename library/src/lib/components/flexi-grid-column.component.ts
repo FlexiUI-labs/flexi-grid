@@ -3,6 +3,7 @@ import { FlexiGridFilterDataModel } from '../models/flexi-grid-filter-data.model
 import { FlexiGridCellTemplateDirective } from '../directives/flexi-grid-cell-template.directive';
 import { FlexiGridHeaderTemplateDirective } from '../directives/flexi-grid-header-template.directive';
 import { FlexiGridFooterTemplateDirective } from '../directives/flexi-grid-footer-template.directive';
+import { FilterOperator } from '../models/state.model';
 
 @Component({
     selector: 'flexi-grid-column',
@@ -26,14 +27,14 @@ export class FlexiGridColumnComponent {
   readonly className = input<string>("");
   readonly textAlign = input<TextAlignType>("left");
   readonly hideOverflow = input<boolean>(true);
-  readonly filterData = input<FlexiGridFilterDataModel[]>([]);
+  readonly filterData = input<FlexiGridFilterDataModel[] | string[] | number[]>([]);
   readonly booleanData = input<string[]>([]);
   readonly showCheckbox = input<boolean>(false);
   readonly filterValue = input<any>();
   readonly filterValue2 = input<any>();
 
   readonly showSecondDate = signal<boolean>(false);
-  readonly filterOperator = signal<string>("contains");
+  readonly filterOperator = signal<FilterOperator>("contains");
   readonly timeStamp = signal<string>(
     `${new Date().getTime()}-${Math.random().toString(36).slice(2, 11)}`
   );

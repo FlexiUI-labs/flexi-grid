@@ -1,4 +1,6 @@
-export class FlexiGridReorderModel{
-    previousIndex: number = 0;
-    currentIndex: number = 0;
+export interface FlexiGridReorderModel {
+  previousIndex: number;
+  currentIndex: number;
+  previousData: any;
+  currentData: any;
 }

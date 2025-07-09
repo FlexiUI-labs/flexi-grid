@@ -35,8 +35,8 @@ export class FlexiGridService {
                         const date1 = new Date(val.value);
                         const isoDate1 = date1.toISOString().split('T')[0];
 
-                        if(val.operator === "range"){                          
-                          const date2 = new Date(val.value2);
+                        if(val.operator === "range"){
+                          const date2 = new Date(val.value2 ?? '');
                           const isoDate2 = date2.toISOString().split('T')[0];
                           filterValue += `${this.toTitleCase(val.field)} ge ${isoDate1} and ${this.toTitleCase(val.field)} le ${isoDate2}`;
                         }else{
@@ -83,7 +83,6 @@ export class FlexiGridService {
                             }else{
                               valueStr = `'${val.value}'`;
                             }
-                            
                         } else {
                             valueStr = val.value;
                         }
