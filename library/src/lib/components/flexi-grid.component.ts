@@ -8,6 +8,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { FlexiGridReorderModel } from '../models/flexi-grid-reorder.model';
 import { FlexiGridColumnCommandTemplateDirective } from '../directives/flexi-grid-column-command-template.directive';
 import { FlexiGridCaptionCommandTemplateDirective } from '../directives/flexi-grid-caption-command-template.directive';
+import { StatusChangeEvent } from '@angular/forms';
 
 @Component({
   selector: 'flexi-grid',
@@ -79,6 +80,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   readonly showFilterPanel = input<boolean>(true);
   readonly groupable = input<boolean>(false);
   readonly groupableField = input<string>('');
+  readonly sort = input<StateOrderModel | undefined>(undefined);
 
   readonly columnsArray = signal<FlexiGridColumnComponent[]>([]);
   readonly selectedRows = signal<Set<any>>(new Set());
@@ -293,6 +295,13 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if(this.sort()){
+      this.state.update(prev => ({...prev, sort: this.sort()!}))
+
+      this.dataStateChange.emit(this.state());
+      //this.sortMethod(true,column);
+    }
+
     const columns = this.getColumns();
     if (!columns || columns.length === 0) {
       this.initializeColumnsFromData();
@@ -753,7 +762,7 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  sort(sortable: boolean, column: any) {
+  sortMethod(sortable: boolean, column: any) {
     if (!column.sortable() || !sortable) return;
 
     const oldSortField = this.state().sort.field;
@@ -972,11 +981,6 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
 
     if (!this.dataBinding()) return;
 
-    this.state.set(new StateModel());
-    this.state.update(prev => ({
-      ...prev,
-      pageSize: this.pageSize
-    }))
     this.getColumns()?.forEach((val: any) => {
       const filterType = val.filterType();
       if (filterType === "boolean" || filterType === "select") {
@@ -984,7 +988,6 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit {
       } else {
         val.filterValue = "";
       }
-
     });
     this.dataStateChange.emit(this.state());
   }

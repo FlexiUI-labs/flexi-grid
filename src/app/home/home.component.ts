@@ -16,12 +16,12 @@ import { StateModel } from '../../../library/src/lib/models/state.model';
 export class HomeComponent {
   readonly state = signal<StateModel>(new StateModel());
   readonly result = resource({
-    request: this.state,
+    params: () => this.state(),
     loader: async() => {
-      const token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImMxZWYyYzA1LTliNmMtNDAxYi1iNzVmLTRkMTkzNzEwYmFkMyIsImZ1bGxOYW1lIjoiU3lzdGVtIEFkbWluIiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJuYmYiOjE3NDUyNzY2NTMsImV4cCI6MTc0NTM2MzA1MywiaXNzIjoiUHVibGljIFdhc3RlIE1hbmFnZW1lbnQgU3lzdGVtIiwiYXVkIjoiUHVibGljIFdhc3RlIE1hbmFnZW1lbnQgU3lzdGVtIn0.sbpZcwtrmeQQImGbJzl6ZyaCU260EnDSA5LUfcsaXuZWQyXXOo0kmc1l7oilcg92VgQ4bH5ZVzJbTm4Hl2c0PQ"
-      let endpoint = "https://pwms.webapi.ecnorow.com/odata/zones?$count=true&&top=45";
-      // const odataEndpoint = this.#grid.getODataEndpoint(this.state());
-      // endpoint += odataEndpoint;
+      const token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjAxOTdkZDlmLTIxMDktNzJjNS04MzczLTAyNjQzZjBkNjRhOCIsImZ1bGxOYW1lIjoiVGFuZXIgU2F5ZGFtIiwiZnVsbE5hbWVXaXRoRW1haWwiOiJUYW5lciBTYXlkYW0gKHRhbmVyc2F5ZGFtQGdtYWlsLmNvbSkiLCJlbWFpbCI6InRhbmVyc2F5ZGFtQGdtYWlsLmNvbSIsInJvbGUiOiJzeXNfYWRtaW4iLCJwZXJtaXNzaW9ucyI6IltdIiwiYnJhbmNoIjoiTWVya2V6IMWedWJlIiwiYnJhbmNoSWQiOiIwMTk3ZGQ5Zi0yMGI2LTdiOWEtYTYxOS0zZGYyNTQ5NDA4MGUiLCJuYmYiOjE3NTIwNTU5MTgsImV4cCI6MTc1MjE0MjMxOCwiaXNzIjoiUmVudCBBIENhciIsImF1ZCI6IkN1c3RvbWVycyJ9.BvhjdSGjZpVZSuxQ8fEOq5FlIRlc5hym2eg8aonFRNq1Ll3hLxcuIvR6dm1qJTXezHlVzsnp_KyQZJsUZuo7SA"
+      let endpoint = "https://localhost:7207/odata/protection-packages?$count=true&";
+      const odataEndpoint = this.#grid.getODataEndpoint(this.state());
+      endpoint += odataEndpoint;
       const res = await lastValueFrom<any>(this.#http.get<any>(endpoint, {
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -41,6 +41,6 @@ export class HomeComponent {
   readonly #grid = inject(FlexiGridService);
 
   changeOData(state:StateModel) {
-   //this.state.set(state);
+   this.state.set(state);
   }
 }

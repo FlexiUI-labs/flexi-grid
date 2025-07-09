@@ -101,7 +101,7 @@
                       </div>
                     }
                     @if(sortable() && column.sortable() && column.field() && data().length > 0){
-                      <div (click)="sort(sortable(), column)" class="flexi-grid-sortable-th" [ngClass]="setTextAlignForThTitle(filterable(), column)">
+                      <div (click)="sortMethod(sortable(), column)" class="flexi-grid-sortable-th" [ngClass]="setTextAlignForThTitle(filterable(), column)">
                         <span>
                           {{column.title() ? column.title() : column.field()}}
                         </span>

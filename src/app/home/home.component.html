@@ -1,7 +1,7 @@
 <flexi-grid
         [data]="data()"
         [total]="total()"
-        [dataBinding]="false"
+        [dataBinding]="true"
         [showFilterPanel]="true"
         [loading]="loading()"
         (onRefresh)="result.reload()"
@@ -17,14 +17,16 @@
                 <flexi-button btnSize="medium" btnColor="primary" btnIcon="add" title="add" flexiTooltip routerLink="/zones/create" />
             </ng-template>
 
-            <flexi-grid-column field="zoneType" title="Zone Type" />
-            <flexi-grid-column field="description" title="Description" />
+            <flexi-grid-column field="name" title="Paket Adı"/>
+            <flexi-grid-column field="price" title="Fiyat" filterType="number" format="c" textAlign="right" symbol="₺"/>
+            <flexi-grid-column field="isRecommended" title="Önerilen mi?" filterType="boolean" [booleanData]="['Evet', 'Hayır']" textAlign="center"/>
+            <flexi-grid-column field="orderNumber" title="Sıra Numarası" textAlign="center"/>
 
             <flexi-grid-column field="isActive" title="Is Active" [filterType]="'boolean'" [booleanData]="['Active','Passive']" textAlign="center" />
-            <flexi-grid-column field="createdOn" title="Created On" filterType="date" format="dd MMM yyyy HH:mm:ss" />
-            <flexi-grid-column field="createdUserName" title="Created By" />
-            <flexi-grid-column field="modifiedOn" title="Modified On" filterType="date" format="dd MMM yyyy HH:mm:ss" />
-            <flexi-grid-column field="modifiedUserName" title="Modified By" />
+            <flexi-grid-column field="createdAt" title="Created On" filterType="date" format="dd MMM yyyy HH:mm:ss" />
+            <flexi-grid-column field="createdFullName" title="Created By" />
+            <flexi-grid-column field="updatedAt" title="Modified On" filterType="date" format="dd MMM yyyy HH:mm:ss" />
+            <flexi-grid-column field="updatedFullName" title="Modified By" />
 
             <ng-template flexiGridColumnCommandTemplate let-item>
                 <flexi-button btnSize="small" btnColor="primary" btnIcon="zoom_in" title="Detail" flexiTooltip />
