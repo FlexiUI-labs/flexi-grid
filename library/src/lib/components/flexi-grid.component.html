@@ -158,7 +158,7 @@
                                 </span>
                               }
                             </div>
-                            @if(column.showSecondDate() || (column.filterType() === "date" && column.filterValueSignal())){
+                            @if(column.showSecondDate()){
                               <input [type]="setDropdownInputType(column)" [ngClass]="setDropdownInputClass(column)" [(ngModel)]="column.filterValue2Signal" name="filexi-filter-input-{{column.timeStamp()}}" (input)="filterDateRange(column)">
                             }
                             <flexi-button btnWidth="100%" [btnText]="clearBtnText()" btnColor="dark" (click)="clearFilter(column.field())" [btnDisabled]="!column.filterValueSignal()"/>

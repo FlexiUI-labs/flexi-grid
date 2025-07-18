@@ -14,63 +14,29 @@ import { StateModel } from '../../../library/src/lib/models/state.model';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  readonly state = signal<StateModel>({
-    filter: [{field:'status', value:'Bekliyor',operator:'eq', type:'select'}],
-    sort: {field:'pickUpDateTime', dir:'asc'},
-    pageNumber: 1,
-    pageSize: 10,
-    skip: 0
-  });
-  readonly result = resource({
-    params: () => this.state(),
-    loader: async() => {
-      console.log(this.state());
-      
-      const token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjAxOTdkZDlmLTIxMDktNzJjNS04MzczLTAyNjQzZjBkNjRhOCIsImZ1bGxOYW1lIjoiVGFuZXIgU2F5ZGFtIiwiZnVsbE5hbWVXaXRoRW1haWwiOiJUYW5lciBTYXlkYW0gKHRhbmVyc2F5ZGFtQGdtYWlsLmNvbSkiLCJlbWFpbCI6InRhbmVyc2F5ZGFtQGdtYWlsLmNvbSIsInJvbGUiOiJzeXNfYWRtaW4iLCJwZXJtaXNzaW9ucyI6IltdIiwiYnJhbmNoIjoiTWVya2V6IMWedWJlIiwiYnJhbmNoSWQiOiIwMTk3ZGQ5Zi0yMGI2LTdiOWEtYTYxOS0zZGYyNTQ5NDA4MGUiLCJuYmYiOjE3NTIwNTU5MTgsImV4cCI6MTc1MjE0MjMxOCwiaXNzIjoiUmVudCBBIENhciIsImF1ZCI6IkN1c3RvbWVycyJ9.BvhjdSGjZpVZSuxQ8fEOq5FlIRlc5hym2eg8aonFRNq1Ll3hLxcuIvR6dm1qJTXezHlVzsnp_KyQZJsUZuo7SA"
-      let endpoint = "https://localhost:7207/odata/reservations?$expand=vehicle&$count=true&";
-      const odataEndpoint = this.#grid.getODataEndpoint(this.state());
-      endpoint += odataEndpoint;
-      const res = await lastValueFrom<any>(this.#http.get<any>(endpoint, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        }
-      }));
-
-     await new Promise((resolve) => setTimeout(resolve, 2000));
-      return res;
-    }
-  });
-
-  readonly data = computed(() => this.result.value()?.value ?? []);
-  readonly total = computed(() => this.result.value()?.["@odata.count"] ?? 0);
-  readonly loading = computed(() => this.result.isLoading());
-  readonly orderNumbersData = signal<number[]>([1,2,3,4,5,6]);
-  readonly statusFilterData = signal<string[]>([
-    "Bekliyor",
-    "Teslim Edildi",
-    "Tamamlandı",
-    "İptal Edildi"
-  ])
-
-  readonly #http = inject(HttpClient);
-  readonly #grid = inject(FlexiGridService);
-
-  changeOData(state:StateModel) {
-   this.state.set(state);
-  }
-
-  onReorder(event:any){
-    console.log(event);
-    
-  }
-
-    getStatusClass(status:string){
-    switch (status) {
-      case "Bekliyor": return "flexi-grid-card-warning"
-      case "Teslim Edildi": return "flexi-grid-card-info"
-      case "Tamamlandı": return "flexi-grid-card-success"
-      case "İptal Edildi": return "flexi-grid-card-danger"
-      default: return "";
-    }
-  }
+  readonly data = computed(() => Orders);
 }
+
+
+export const Orders = [
+  { "date": "2025-07-01", "productName": "Wireless Mouse", "quantity": 2, "price": 19.99, "total": 39.98 },
+  { "date": "2025-07-02", "productName": "Mechanical Keyboard", "quantity": 1, "price": 89.50, "total": 89.50 },
+  { "date": "2025-07-03", "productName": "USB-C Hub", "quantity": 3, "price": 15.75, "total": 47.25 },
+  { "date": "2025-07-03", "productName": "Laptop Stand", "quantity": 1, "price": 32.90, "total": 32.90 },
+  { "date": "2025-07-04", "productName": "Webcam", "quantity": 2, "price": 45.00, "total": 90.00 },
+  { "date": "2025-07-05", "productName": "Bluetooth Speaker", "quantity": 1, "price": 59.99, "total": 59.99 },
+  { "date": "2025-07-06", "productName": "Desk Lamp", "quantity": 2, "price": 22.50, "total": 45.00 },
+  { "date": "2025-07-06", "productName": "External SSD", "quantity": 1, "price": 109.99, "total": 109.99 },
+  { "date": "2025-07-07", "productName": "HDMI Cable", "quantity": 5, "price": 8.25, "total": 41.25 },
+  { "date": "2025-07-08", "productName": "Smartphone Holder", "quantity": 3, "price": 12.90, "total": 38.70 },
+  { "date": "2025-07-09", "productName": "Gaming Headset", "quantity": 1, "price": 75.00, "total": 75.00 },
+  { "date": "2025-07-09", "productName": "Power Bank", "quantity": 2, "price": 29.95, "total": 59.90 },
+  { "date": "2025-07-10", "productName": "Wireless Charger", "quantity": 1, "price": 24.99, "total": 24.99 },
+  { "date": "2025-07-10", "productName": "Ergonomic Chair", "quantity": 1, "price": 199.90, "total": 199.90 },
+  { "date": "2025-07-11", "productName": "Monitor 27\"", "quantity": 2, "price": 149.99, "total": 299.98 },
+  { "date": "2025-07-12", "productName": "Desk Mat", "quantity": 3, "price": 10.00, "total": 30.00 },
+  { "date": "2025-07-13", "productName": "Smart LED Bulb", "quantity": 4, "price": 9.99, "total": 39.96 },
+  { "date": "2025-07-14", "productName": "Streaming Microphone", "quantity": 1, "price": 139.00, "total": 139.00 },
+  { "date": "2025-07-15", "productName": "Graphic Tablet", "quantity": 1, "price": 85.50, "total": 85.50 },
+  { "date": "2025-07-16", "productName": "Portable Projector", "quantity": 1, "price": 249.99, "total": 249.99 }
+]
