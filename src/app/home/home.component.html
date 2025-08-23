@@ -1,22 +1,23 @@
-<flexi-grid
-        [data]="data()"
-        [showFilterPanel]="true"
-        themeClass="dark"
-        [showCaption]="true"
-        captionTitle="User List"
-        [useCommandDropdown]="true"
-        [showIndex]="true"
-        language="tr"
-        >
-            <flexi-grid-column field="date" title="Tarih" filterType="date" format="dd MMM yyyy"/>
-            <flexi-grid-column field="productName" title="Ürün Adı"/>
-            <flexi-grid-column field="quantity" title="Adet"/>
-            <flexi-grid-column field="price" title="Birim Fiyatı"/>
-            <flexi-grid-column field="total" title="Toplam"/>
+<div class="container mt-4">
+    <flexi-grid
+      [data]="data()"
+      [showFilterPanel]="true"
+      themeClass="light"
+      [showCaption]="true"
+      captionTitle="User List"
+      [useCommandDropdown]="false"
+      [showIndex]="true"
+      language="tr">
+        <flexi-grid-column field="date" title="Tarih" filterType="date" format="dd MMM yyyy" />
+        <flexi-grid-column field="product.name" title="Ürün Adı" />
+        <flexi-grid-column field="quantity" title="Adet" />
+        <flexi-grid-column field="price" title="Birim Fiyatı" />
+        <flexi-grid-column field="total" title="Toplam" />
 
-            <ng-template flexiGridColumnCommandTemplate let-item>
-                <flexi-button btnSize="small" btnColor="primary" btnIcon="zoom_in" title="Detail" flexiTooltip />
-                <flexi-button btnSize="small" btnColor="info" btnIcon="edit" title="Edit" flexiTooltip />
-                <flexi-button btnSize="small" btnColor="pink" btnIcon="delete" title="Remove" flexiTooltip />
-            </ng-template>
-        </flexi-grid>
+        <ng-template flexiGridColumnCommandTemplate let-item>
+            <flexi-button btnSize="small" btnColor="primary" btnIcon="zoom_in" title="Detail" flexiTooltip />
+            <flexi-button btnSize="small" btnColor="info" btnIcon="edit" title="Edit" flexiTooltip />
+            <flexi-button btnSize="small" btnColor="pink" btnIcon="delete" title="Remove" flexiTooltip />
+        </ng-template>
+    </flexi-grid>
+</div>

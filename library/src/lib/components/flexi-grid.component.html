@@ -1,4 +1,4 @@
-@if(getColumns().length > 0){
+@if(columnsSignal().length > 0){
 <div [attr.data-bs-theme]="themeClass()" class="flexi-grid-table-container overflow-x"
   [ngClass]="(loading()) ? 'flexi-grid-disabled-div' : ''"
   [ngStyle]="{ width: autoWidth() ? '100%' : width(), 'font-size': fontSize(), 'font-family': fontFamily() }">
@@ -27,7 +27,7 @@
             <div style="padding: 10px; padding-bottom: 2px; background-color: var(--flexi-grid-bg-color-part)">
               <div class="flexi-grid-dropdown-title">{{ columnVisibility() }}</div>
               <div class="flexi-grid-bottom-line"></div>
-              @for(column of getColumns(); track trackByFn()){
+              @for(column of columnsSignal(); track trackByFn()){
               <label class="flexi-grid-dropdown-checkbox-item" [for]="column.field() ? column.field() : column.title()">
                 <input [(ngModel)]="column.visibleSignal" [id]="column.field() ? column.field() : column.title()"
                   type="checkbox" />
@@ -91,10 +91,10 @@
                 </th>
               }
 
-              @for(column of getColumns(); track trackByFn(); let columnIndex = $index){
+              @for(column of columnsSignal(); track trackByFn(); let columnIndex = $index){
                 <th class="flexi-grid-border" [hidden]="!column.visibleSignal()"
                   [ngStyle]="{ width: column.widthSignal() }" scope="col" role="columnheader"
-                  [attr.aria-sort]="getSortState('name')">
+                  [attr.aria-sort]="getSortState(column.field())">
                   <div [ngClass]="setTextAlignForTh(filterable(), column)">
                     @if(resizable() && column.resizable()){
                       <div class="flexi-grid-resize-handle" (mousedown)="onMouseDown($event, column, column.widthSignal())" (dblclick)="autoFitColumnWidth(column)">
@@ -106,8 +106,8 @@
                           {{column.title() ? column.title() : column.field()}}
                         </span>
                         <div class="flexi-grid-d-flex">
-                          @if(state().sort.field === column.field()){
-                            @if(state().sort.dir === "asc"){
+                          @if(sortSignal().field === column.field()){
+                            @if(sortSignal().dir === "asc"){
                               <span class="material-symbols-outlined">
                                 arrow_upward_alt
                               </span>
@@ -212,7 +212,7 @@
                 <th class="flexi-grid-filter-th" [ngStyle]="{ width: indexWidth() }" scope="col" role="columnheader"></th>
               }
 
-              @for(column of getColumns(); track trackByFn()){
+              @for(column of columnsSignal(); track trackByFn()){
                 @if(column.filterable()){
                 <th class="flexi-grid-filter-th" [hidden]="!column.visibleSignal()"
                   [attr.data-label]="column.title() ? column.title() : column.field()" scope="col" role="columnheader">
@@ -378,7 +378,7 @@
               @if(data().length > 0 || prevData().length > 0){
                 @for(item of (pagedData().length > 0 ? pagedData() : prevData()); track trackByFn(); let i = $index){
                   <tr cdkDrag [cdkDragDisabled]="!reorderable()"
-                    [ngClass]="{'flexi-grid-selected-row': selectedRows().has(item)}"
+                    [class.flexi-grid-selected-row]="selectedRows().has(item)"
                     [ngStyle]="{ 'min-height': trMinHeight() }" role="row">
                     @if(selectable()){
                       <td [ngStyle]="{
@@ -417,16 +417,14 @@
                         @if(!pageableSignal()){
                         <span style="font-weight: bold;">{{ $index + 1 }}</span>
                         }@else {
-                        <span style="font-weight: bold;">{{$index + (state().pageNumber - 1) * +state().pageSize + 1}}</span>
+                        <span style="font-weight: bold;">{{$index + (pageNumSignal() - 1) * +pageSizeSignal() + 1}}</span>
                         }
                       </td>
                     }
 
-                    @for(column of getColumns(); track trackByFn()){
-                      <td [ngStyle]="{
-                            width: column.widthSignal(),
-                            'text-align': column.textAlign()
-                          }"
+                    @for(column of columnsSignal(); track trackByFn()){
+                      <td
+                          [style.width]="column.widthSignal()" [style.text-align]="column.textAlign()"
                           (click)="toggleRowSelection(item[selectableField()])"
                           [hidden]="!column.visibleSignal()"
                           [ngClass]="tdTemplateClassName(column)"
@@ -537,12 +535,9 @@
                   }"></td>
                 }
 
-                @for(column of getColumns(); track column){
+                @for(column of columnsSignal(); track column){
                   <td
-                    [ngStyle]="{
-                      width: column.widthSignal(),
-                      textAlign: column.textAlign()
-                    }"
+                    [style.width]="column.widthSignal()" [style.text-align]="column.textAlign()"
                     [hidden]="!column.visibleSignal()"
                     [ngClass]="tdTemplateClassName(column)">
                       <div class="flexi-grid-cell-footer">
@@ -575,7 +570,7 @@
   <div class="flexi-grid-pagination-container">
     @if(!isShowMobileFilter()){
     <div class="flexi-grid-pagination-part-one">
-      <select class="flexi-grid-pagesize-select" [ngModel]="state().pageSize" (change)="changePageSize($event)">
+      <select class="flexi-grid-pagesize-select" [ngModel]="pageSizeSignal" (change)="changePageSize($event)">
         @for(size of pageSizeList(); track size){
         <option>{{ size }}</option>
         }
@@ -586,43 +581,43 @@
     </div>
     <div class="flexi-grid-pagination-part-two">
       <ul class="flexi-grid-pagination">
-        @if(pageNumbers().length > 0){
-        <li class="flexi-grid-page-item" [ngClass]="state().pageNumber === 1 ? 'disabled' : ''" (click)="changePage(1)">
+        @if(pageNumbersSignal().length > 0){
+        <li class="flexi-grid-page-item" [ngClass]="pageNumSignal() === 1 ? 'disabled' : ''" (click)="changePage(1)">
           <div class="flexi-grid-page-link" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </div>
         </li>
-        <li class="flexi-grid-page-item" [ngClass]="state().pageNumber === 1 ? 'disabled' : ''"
-          (click)="changePage(state().pageNumber - 1)">
+        <li class="flexi-grid-page-item" [ngClass]="pageNumSignal() === 1 ? 'disabled' : ''"
+          (click)="changePage(pageNumSignal() - 1)">
           <div class="flexi-grid-page-link" aria-label="Previous">
             <span aria-hidden="true">&#8249;</span>
           </div>
         </li>
-        @if(pageNumbers()[0] !== 1){
+        @if(pageNumbersSignal()[0] !== 1){
         <li class="flexi-grid-page-item" (click)="previousPageGroup()">
           <div class="flexi-grid-page-link">...</div>
         </li>
-        } @for(pageNumber of pageNumbers(); track trackByFn()){
+        } @for(pageNumber of pageNumbersSignal(); track trackByFn()){
         <li class="flexi-grid-page-item">
           <div (click)="changePage(pageNumber)" class="flexi-grid-page-link" [ngClass]="
-              state().pageNumber === pageNumber ? 'flexi-grid-active' : ''
+              pageNumSignal() === pageNumber ? 'flexi-grid-active' : ''
             ">
             {{ pageNumber }}
           </div>
         </li>
-        } @if(pageNumbers()[pageNumbers().length - 1] !== totalPageCount()){
+        } @if(pageNumbersSignal()[pageNumbersSignal().length - 1] !== totalPageCountSignal()){
         <li class="flexi-grid-page-item" (click)="nextPageGroup()">
           <div class="flexi-grid-page-link">...</div>
         </li>
         }
-        <li class="flexi-grid-page-item" [ngClass]="state().pageNumber === totalPageCount() ? 'disabled' : ''"
-          (click)="changePage(state().pageNumber + 1)">
+        <li class="flexi-grid-page-item" [ngClass]="pageNumSignal() === totalPageCountSignal() ? 'disabled' : ''"
+          (click)="changePage(pageNumSignal() + 1)">
           <div class="flexi-grid-page-link" aria-label="Next">
             <span aria-hidden="true">&#8250;</span>
           </div>
         </li>
-        <li class="flexi-grid-page-item" [ngClass]="state().pageNumber === totalPageCount() ? 'disabled' : ''"
-          (click)="changePage(totalPageCount())">
+        <li class="flexi-grid-page-item" [ngClass]="pageNumSignal() === totalPageCountSignal() ? 'disabled' : ''"
+          (click)="changePage(totalPageCountSignal())">
           <div class="flexi-grid-page-link" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </div>
@@ -633,7 +628,7 @@
     }
     <div class="flexi-grid-pagination-part-third">
       <span>
-        <b>{{ state().pageNumber }}</b> - <b>{{ totalPageCount() }}</b> {{ ofText() }}
+        <b>{{ pageNumSignal() }}</b> - <b>{{ totalPageCountSignal() }}</b> {{ ofText() }}
         <b>{{ (totalSignal() | currency : "" : "" : "1.0")!.replace(",", ".") }}</b> {{ itemsText() }}
       </span>
     </div>
@@ -643,7 +638,7 @@
 }
 
 <ng-template #treeRow let-node let-level="level" let-index="index">
-  <tr [ngClass]="{'flexi-grid-selected-row': selectedRows().has(level)}"
+  <tr [class.flexi-grid-selected-row]="selectedRows().has(level)"
       [ngStyle]="{ 'min-height': trMinHeight() }" role="row">
     @if(selectable()){
       <td [ngStyle]="{
@@ -683,11 +678,9 @@
       </td>
     }
 
-    @for(column of getColumns(); track column; let columnIndex = $index){
-      <td [ngStyle]="{
-            width: column.widthSignal(),
-            textAlign: column.textAlign()
-          }"
+    @for(column of columnsSignal(); track column; let columnIndex = $index){
+      <td
+          [style.width]="column.widthSignal()" [style.text-align]="column.textAlign()"
           [ngClass]="tdTemplateClassName(column)"
           [hidden]="!column.visibleSignal()"
           [attr.data-label]="column.title() || column.field()"

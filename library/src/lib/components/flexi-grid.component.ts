@@ -115,6 +115,15 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit, OnInit {
   globalRowIndex = 0;
   readonly pageableSignal = computed(() => this.pageable() && !this.groupable());
   readonly heightSignal = computed(() => this.autoHeight() ? '100%' : this.height());
+  readonly columnsSignal = computed(() => this.getColumns() ?? []);
+  readonly sortSignal = computed(() => this.state().sort);
+  readonly sortFieldSignal = computed(() => this.state().sort.field);
+  readonly sortDirSignal = computed(() => this.state().sort.dir);
+  readonly filtersSignal = computed(() => this.state().filter);
+  readonly pageNumSignal = computed(() => this.state().pageNumber);
+  readonly pageSizeSignal = computed(() => this.state().pageSize);
+  readonly totalPageCountSignal = computed(() => this.totalPageCount());
+  readonly pageNumbersSignal = computed(() => this.pageNumbers());
 
   readonly dataStateChange = output<any>();
   readonly onChange = output<any>();
@@ -657,7 +666,11 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit, OnInit {
         filteredData = filteredData.filter(item => {
           const field = filter.field;
           const value = filter.value;
-          let itemValue = item[field];
+
+          const getValue = (obj: any, path: string) =>
+            path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+
+          let itemValue = getValue(item, String(field));
           let filterValue: any = value;
           let filterValue2: any = filter.value2;
 
@@ -763,17 +776,36 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit, OnInit {
     }
   }
 
+  getValue(obj: any, path: string) {
+    return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+  }
+
   sortData() {
     if (this.dataBinding()) {
       this.dataStateChange.emit(this.state());
     } else {
-      this.dataSignal.set([...this.dataSignal().sort((a, b) => {
-        const field = this.state().sort.field;
-        const dir = this.state().sort.dir === 'asc' ? 1 : -1;
-        if (a[field] < b[field]) return -1 * dir;
-        if (a[field] > b[field]) return 1 * dir;
-        return 0;
-      })]);
+      const { field, dir } = this.state().sort;
+      if (!field) return;
+
+      const data = [...this.dataSignal()];
+
+      data.sort((a, b) => {
+        const av = this.getValue(a, field);
+        const bv = this.getValue(b, field);
+
+        let result = 0;
+        if (av == null && bv == null) result = 0;
+        else if (av == null) result = -1;
+        else if (bv == null) result = 1;
+        else if (typeof av === 'string' && typeof bv === 'string') {
+          result = av.localeCompare(bv, 'tr');
+        } else {
+          result = av > bv ? 1 : av < bv ? -1 : 0;
+        }
+
+        return dir === 'asc' ? result : -result;
+      });
+      this.dataSignal.set([...data]);
       this.updatePagedData();
     }
   }
