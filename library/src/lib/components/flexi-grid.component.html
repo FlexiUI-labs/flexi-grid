@@ -570,9 +570,9 @@
   <div class="flexi-grid-pagination-container">
     @if(!isShowMobileFilter()){
     <div class="flexi-grid-pagination-part-one">
-      <select class="flexi-grid-pagesize-select" [ngModel]="pageSizeSignal" (change)="changePageSize($event)">
+      <select class="flexi-grid-pagesize-select" [ngModel]="pageSizeSignal()" (change)="changePageSize($event)">
         @for(size of pageSizeList(); track size){
-        <option>{{ size }}</option>
+          <option>{{ size }}</option>
         }
       </select>
       <span [ngStyle]="{visibility: selectedRows().size > 0 ? 'visible' : 'hidden', height: selectedRows().size > 0 ? '100%' : '0px'}">
@@ -627,10 +627,12 @@
     </div>
     }
     <div class="flexi-grid-pagination-part-third">
-      <span>
-        <b>{{ pageNumSignal() }}</b> - <b>{{ totalPageCountSignal() }}</b> {{ ofText() }}
-        <b>{{ (totalSignal() | currency : "" : "" : "1.0")!.replace(",", ".") }}</b> {{ itemsText() }}
-      </span>
+      @if(totalPageCountSignal()){
+        <span>
+          <b>{{ pageNumSignal() }}</b> - <b>{{ totalPageCountSignal() }}</b> {{ ofText() }}
+          <b>{{ (totalSignal() | currency : "" : "" : "1.0")!.replace(",", ".") }}</b> {{ itemsText() }}
+        </span>
+      }
     </div>
   </div>
   }
