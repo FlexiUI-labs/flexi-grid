@@ -1,11 +1,11 @@
 import { Component, computed } from '@angular/core';
 import { FlexiGridModule } from '../../../library/src/lib/modules/flexi-grid.module';
-import { CommonModule } from '@angular/common';
+
 
 
 @Component({
   selector: 'app-home',
-  imports: [FlexiGridModule, CommonModule],
+  imports: [FlexiGridModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

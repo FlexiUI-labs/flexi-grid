@@ -1,6 +1,6 @@
 {
   "name": "flexi-grid",
-  "version": "20.0.9",
+  "version": "21.0.0",
   "description": "A lightweight, customizable Angular data grid component with filtering, sorting, and pagination features.",
   "author": "Taner Saydam <tanersaydam@gmail.com>",
   "license": "MIT",
@@ -13,12 +13,12 @@
     "filtering"
   ],
   "peerDependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/core": "^20.0.0",
-    "@angular/cdk": "^20.0.00",
-    "tr-currency": "^20.0.0",
-    "flexi-button": "^20.0.0",
-    "flexi-tooltip": "^20.0.0",
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/cdk": "^21.0.0",
+    "tr-currency": "^21.0.0",
+    "flexi-button": "^21.0.0",
+    "flexi-tooltip": "^21.0.0",
     "exceljs": "^4.4.0",
     "file-saver-es": "^2.0.5",
     "@types/file-saver-es": "^2.0.3"
