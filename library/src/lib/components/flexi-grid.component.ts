@@ -548,32 +548,17 @@ export class FlexiGridComponent implements OnChanges, AfterViewInit, OnInit {
     if (this.state().pageNumber === pageNumber) return;
     this.allSelected.set(false);
 
-    if (pageNumber > this.totalPageCount()) {
-      pageNumber = this.totalPageCount();
-    } else if (pageNumber < 1) {
-      pageNumber = 1;
-    }
+    pageNumber = Math.min(Math.max(pageNumber, 1), this.totalPageCount());
 
-    const previousPageNumber = this.state().pageNumber;
     this.state.update(prev => ({
       ...prev,
-      pageNumber: +pageNumber,
-      skip: (pageNumber - 1) * +this.state().pageSize
+      pageNumber,
+      skip: (pageNumber - 1) * +prev.pageSize
     }));
+
     this.dataStateChange.emit(this.state());
 
-    // Check if the page number crossed a 10-page boundary
-    const previousGroup = Math.floor((previousPageNumber - 1) / this.pageNumberCount());
-    const currentGroup = Math.floor((pageNumber - 1) / this.pageNumberCount());
-
-    if (currentGroup > previousGroup) {
-      this.nextPageGroup();
-    } else if (currentGroup < previousGroup) {
-      this.previousPageGroup();
-    } else {
-      this.setPageNumbers();
-    }
-
+    this.setPageNumbers();
     this.updatePagedData();
   }
 
