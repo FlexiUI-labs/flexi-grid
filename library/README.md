@@ -136,7 +136,7 @@ Use `flexiGridCaptionCommandTemplate` for adding commands to the table caption:
 ```html
 <flexi-grid>
   <ng-template flexiGridCaptionCommandTemplate>
-    <flexi-button btnColor="primary" btnIcon="add" btnSize="small" flexiTooltip title="Add" />
+    <flexi-button btnColor="primary" btnIcon="add" flexiTooltip title="Add" />
   </ng-template>
 </flexi-grid>
 ```
@@ -199,10 +199,10 @@ Use `flexiGridColumnCommandTemplate` to define a custom command column template:
 You can set an initial sort configuration to have the grid display data in a specific order when it loads:
 
 ```html
-<flexi-grid 
-  [data]="data" 
+<flexi-grid
+  [data]="data"
   [sort]="{field: 'name', dir: 'asc'}">
-  
+
   <flexi-grid-column field="id" title="ID" width="70px" />
   <flexi-grid-column field="name" title="Name" />
   <flexi-grid-column field="email" title="Email" />
