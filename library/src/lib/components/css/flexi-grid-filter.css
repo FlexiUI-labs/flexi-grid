@@ -8,7 +8,7 @@
 }
 
 .flexi-grid-filter-filled{
-    background-color: #dee2e6;
+    background-color: var(--flexi-grid-filter-bg-color);
 }
 
 .flexi-grid-filter-date-content{
